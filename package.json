@@ -10,6 +10,7 @@
     "prestart": "npm run theme:css",
     "precf:build": "npm run theme:css",
     "config": "./configure.sh",
+    "doc": "node scripts/render-doc.cjs",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
