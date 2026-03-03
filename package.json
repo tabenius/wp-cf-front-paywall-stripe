@@ -3,6 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "theme:css": "node scripts/generate-theme-css.mjs",
+    "predev": "npm run theme:css",
+    "prebuild": "npm run theme:css",
+    "precf:build": "npm run theme:css",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
