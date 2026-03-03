@@ -7,6 +7,7 @@ A Next.js 15 application for WordPress/WPGraphQL content with authenticated cour
 - WordPress content via GraphQL (`NEXT_PUBLIC_WORDPRESS_URL`)
 - Auth flows with email/password and optional OAuth providers
 - Course paywall and entitlement checks
+- Digital file sales with Stripe checkout and secure downloads
 - Stripe Checkout + webhook-based access granting
 - Admin UI for access rules and health checks
 - Storage backends:
@@ -49,6 +50,13 @@ Common production variables:
 - `WORDPRESS_GRAPHQL_AUTH_TOKEN`
 - `STRIPE_SECRET_KEY`
 - `STRIPE_WEBHOOK_SECRET`
+- `DIGITAL_ACCESS_STORE`
+- `CF_DIGITAL_ACCESS_KV_KEY`
+
+Digital product catalog:
+
+- `config/digital-products.json` defines downloadable files, pricing, and IDs.
+- Storefront is available at `/digital-files`.
 
 ## Scripts
 

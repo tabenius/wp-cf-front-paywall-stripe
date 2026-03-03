@@ -1,6 +1,7 @@
 import crypto from "node:crypto";
 import { NextResponse } from "next/server";
 import { grantCourseAccess } from "@/lib/courseAccess";
+import { grantDigitalAccess } from "@/lib/digitalAccessStore";
 
 function parseSignature(headerValue) {
   if (typeof headerValue !== "string") return {};
@@ -51,15 +52,21 @@ export async function POST(request) {
     if (event?.type === "checkout.session.completed") {
       const session = event?.data?.object || {};
       const paymentStatus = session?.payment_status;
+      const purchaseKind = session?.metadata?.purchase_kind || "course";
       const courseUri = session?.metadata?.course_uri || "";
+      const digitalProductId = session?.metadata?.digital_product_id || "";
       const email = (
         session?.customer_details?.email ||
         session?.metadata?.user_email ||
         ""
       ).toLowerCase();
 
-      if (paymentStatus === "paid" && courseUri && email) {
-        await grantCourseAccess(courseUri, email);
+      if (paymentStatus === "paid" && email) {
+        if (purchaseKind === "digital_file" && digitalProductId) {
+          await grantDigitalAccess(digitalProductId, email);
+        } else if (courseUri) {
+          await grantCourseAccess(courseUri, email);
+        }
       }
     }
     return NextResponse.json({ ok: true });

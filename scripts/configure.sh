@@ -75,11 +75,12 @@ setup_env() {
     touch "$ENV_FILE"
   fi
 
-  local wp_url admin_emails admin_passwords auth_secret
+  local wp_url admin_emails admin_passwords auth_secret digital_store
   wp_url="$(get_env_value NEXT_PUBLIC_WORDPRESS_URL)"
   admin_emails="$(get_env_value ADMIN_EMAILS)"
   admin_passwords="$(get_env_value ADMIN_PASSWORDS)"
   auth_secret="$(get_env_value AUTH_SECRET)"
+  digital_store="$(get_env_value DIGITAL_ACCESS_STORE)"
 
   read -r -p "WordPress URL [${wp_url:-https://www.example.com/}]: " input
   set_env_key "NEXT_PUBLIC_WORDPRESS_URL" "${input:-${wp_url:-https://www.example.com/}}"
@@ -92,6 +93,9 @@ setup_env() {
 
   read -r -p "AUTH_SECRET [${auth_secret:-replace-with-a-long-random-secret}]: " input
   set_env_key "AUTH_SECRET" "${input:-${auth_secret:-replace-with-a-long-random-secret}}"
+
+  read -r -p "Digital access store backend (local/cloudflare) [${digital_store:-cloudflare}]: " input
+  set_env_key "DIGITAL_ACCESS_STORE" "${input:-${digital_store:-cloudflare}}"
 
   printf "${GREEN}Updated %s${RESET}\n" "$ENV_FILE"
 }

@@ -22,6 +22,20 @@ Detta projekt kombinerar Next.js, WordPress/WPGraphQL och Stripe för att skydda
 - `ADMIN_EMAILS` och `ADMIN_PASSWORDS`: kommaseparerade admin-par för inloggning till admin-UI.
 - `STRIPE_SECRET_KEY` och `STRIPE_WEBHOOK_SECRET`: Stripe-betalningar.
 - `COURSE_ACCESS_STORE` och `USER_STORE_BACKEND`: lokal lagring eller Cloudflare KV.
+- `DIGITAL_ACCESS_STORE` och `CF_DIGITAL_ACCESS_KV_KEY`: lagring av åtkomst till köpta digitala filer.
+
+## Digitala filer
+
+Digitala produkter konfigureras i `config/digital-products.json`:
+
+- `id`: stabil produktidentifierare.
+- `title`: produktnamn i UI/Stripe.
+- `description`: valfri text i butiken.
+- `priceCents` och `currency`: betalningsbelopp.
+- `fileUrl`: nedladdnings-URL (HTTP/HTTPS).
+- `active`: styr om produkten visas i butiken.
+
+Butikssida: `/digital-files`.
 
 ## Börja här
 

@@ -1,0 +1,20 @@
+[
+  {
+    "id": "starter-guide",
+    "title": "Starter Guide PDF",
+    "description": "A concise PDF guide for getting started.",
+    "priceCents": 1900,
+    "currency": "usd",
+    "fileUrl": "https://example.test/files/starter-guide.pdf",
+    "active": true
+  },
+  {
+    "id": "advanced-workbook",
+    "title": "Advanced Workbook ZIP",
+    "description": "Downloadable workbook and templates.",
+    "priceCents": 4900,
+    "currency": "usd",
+    "fileUrl": "https://example.test/files/advanced-workbook.zip",
+    "active": true
+  }
+]

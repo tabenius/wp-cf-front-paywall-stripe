@@ -22,7 +22,20 @@ This project combines Next.js, WordPress/WPGraphQL, and Stripe to protect course
 - `ADMIN_EMAILS` and `ADMIN_PASSWORDS`: comma-separated admin login pairs for the admin UI.
 - `STRIPE_SECRET_KEY` and `STRIPE_WEBHOOK_SECRET`: Stripe payments.
 - `COURSE_ACCESS_STORE` and `USER_STORE_BACKEND`: local vs Cloudflare KV state.
+- `DIGITAL_ACCESS_STORE` and `CF_DIGITAL_ACCESS_KV_KEY`: storage for purchased digital file access.
 
+## Digital files
+
+Digital products are configured in `config/digital-products.json`:
+
+- `id`: stable product identifier.
+- `title`: product name shown in UI/Stripe.
+- `description`: optional storefront text.
+- `priceCents` and `currency`: payment amount.
+- `fileUrl`: downloadable file URL (HTTP/HTTPS).
+- `active`: controls storefront visibility.
+
+Storefront route: `/digital-files`.
 ## Where to start
 
 - Project setup: `README.md`

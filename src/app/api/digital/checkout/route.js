@@ -1,0 +1,64 @@
+import { NextResponse } from "next/server";
+import { auth } from "@/auth";
+import { getDigitalProductById } from "@/lib/digitalProducts";
+import { createStripePaymentSession, isStripeEnabled } from "@/lib/stripe";
+
+export async function POST(request) {
+  const session = await auth();
+  if (!session?.user?.email) {
+    return NextResponse.json(
+      { ok: false, error: "Du behöver vara inloggad för att betala." },
+      { status: 401 },
+    );
+  }
+  if (!isStripeEnabled()) {
+    return NextResponse.json(
+      { ok: false, error: "Onlinebetalning är tillfälligt otillgänglig." },
+      { status: 400 },
+    );
+  }
+
+  try {
+    const body = await request.json();
+    const productId = typeof body?.productId === "string" ? body.productId.trim() : "";
+    if (!productId) {
+      return NextResponse.json(
+        { ok: false, error: "Produkten kunde inte förberedas för betalning." },
+        { status: 400 },
+      );
+    }
+
+    const product = await getDigitalProductById(productId);
+    if (!product || !product.active || product.priceCents <= 0) {
+      return NextResponse.json(
+        { ok: false, error: "Produkten är inte tillgänglig för betalning just nu." },
+        { status: 400 },
+      );
+    }
+
+    const baseUrl = new URL(request.url).origin;
+    const successUrl = `${baseUrl}/digital-files?checkout=success&product_id=${encodeURIComponent(product.id)}&session_id={CHECKOUT_SESSION_ID}`;
+    const cancelUrl = `${baseUrl}/digital-files?checkout=cancel&product_id=${encodeURIComponent(product.id)}`;
+
+    const checkout = await createStripePaymentSession({
+      itemName: product.title,
+      priceCents: product.priceCents,
+      currency: product.currency,
+      email: session.user.email,
+      successUrl,
+      cancelUrl,
+      metadata: {
+        purchase_kind: "digital_file",
+        digital_product_id: product.id,
+      },
+    });
+
+    return NextResponse.json({ ok: true, url: checkout.url, id: checkout.id });
+  } catch (error) {
+    console.error("Digital checkout failed:", error);
+    return NextResponse.json(
+      { ok: false, error: "Det gick inte att starta betalningen just nu. Försök igen snart." },
+      { status: 400 },
+    );
+  }
+}

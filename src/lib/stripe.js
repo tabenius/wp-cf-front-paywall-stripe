@@ -13,14 +13,14 @@ export function isStripeEnabled() {
   return hasStripeConfig();
 }
 
-export async function createStripeCheckoutSession({
-  courseUri,
-  courseTitle,
+export async function createStripePaymentSession({
+  itemName,
   priceCents,
   currency,
   email,
   successUrl,
   cancelUrl,
+  metadata = {},
 }) {
   if (!hasStripeConfig()) {
     throw new Error("Stripe is not configured");
@@ -34,12 +34,11 @@ export async function createStripeCheckoutSession({
   payload.set("line_items[0][quantity]", "1");
   payload.set("line_items[0][price_data][currency]", currency.toLowerCase());
   payload.set("line_items[0][price_data][unit_amount]", String(priceCents));
-  payload.set(
-    "line_items[0][price_data][product_data][name]",
-    courseTitle || `Course access: ${courseUri}`,
-  );
-  payload.set("metadata[course_uri]", courseUri);
+  payload.set("line_items[0][price_data][product_data][name]", itemName || "Digital item");
   payload.set("metadata[user_email]", email.toLowerCase());
+  for (const [key, value] of Object.entries(metadata)) {
+    payload.set(`metadata[${key}]`, String(value));
+  }
 
   const response = await fetch("https://api.stripe.com/v1/checkout/sessions", {
     method: "POST",
@@ -51,6 +50,29 @@ export async function createStripeCheckoutSession({
     throw new Error("Failed to create Stripe checkout session");
   }
   return json;
+}
+
+export async function createStripeCheckoutSession({
+  courseUri,
+  courseTitle,
+  priceCents,
+  currency,
+  email,
+  successUrl,
+  cancelUrl,
+}) {
+  return createStripePaymentSession({
+    itemName: courseTitle || `Course access: ${courseUri}`,
+    priceCents,
+    currency,
+    email,
+    successUrl,
+    cancelUrl,
+    metadata: {
+      purchase_kind: "course",
+      course_uri: courseUri,
+    },
+  });
 }
 
 export async function fetchStripeCheckoutSession(sessionId) {

@@ -39,6 +39,9 @@ export default async function Header() {
           <Link href="/about-us" className={menuItemClass}>
             Om
           </Link>
+          <Link href="/digital-files" className={menuItemClass}>
+            Filer
+          </Link>
           <Link href="/admin" className={menuItemClass}>
             Admin
           </Link>
