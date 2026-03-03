@@ -2,14 +2,15 @@ import { NextResponse } from "next/server";
 import {
   createAdminSessionCookie,
   createAdminSessionToken,
+  isAdminCredentialsConfigured,
   validateAdminCredentials,
 } from "@/auth";
 
 export async function POST(request) {
   try {
-    if (!process.env.ADMIN_USERNAME || !process.env.ADMIN_PASSWORD) {
+    if (!isAdminCredentialsConfigured()) {
       console.error(
-        "Admin login unavailable: ADMIN_USERNAME and/or ADMIN_PASSWORD are not configured.",
+        "Admin login unavailable: set ADMIN_EMAILS and ADMIN_PASSWORDS (or legacy ADMIN_USERNAME and ADMIN_PASSWORD).",
       );
       return NextResponse.json(
         { ok: false, error: "Adminområdet är inte klart ännu. Kontakta support." },

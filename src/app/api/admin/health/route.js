@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getAdminSessionFromCookieHeader } from "@/auth";
+import { getAdminSessionFromCookieHeader, isAdminCredentialsConfigured } from "@/auth";
 import { getEnabledProviders } from "@/lib/oauthProviders";
 import { isStripeEnabled } from "@/lib/stripe";
 
@@ -79,9 +79,7 @@ export async function GET(request) {
 
   const backend = process.env.COURSE_ACCESS_BACKEND || "local";
   const providers = getEnabledProviders();
-  const adminConfigured = Boolean(
-    process.env.ADMIN_USERNAME && process.env.ADMIN_PASSWORD,
-  );
+  const adminConfigured = isAdminCredentialsConfigured();
   const authSecretConfigured = Boolean(process.env.AUTH_SECRET);
   const stripeWebhookConfigured = Boolean(process.env.STRIPE_WEBHOOK_SECRET);
 

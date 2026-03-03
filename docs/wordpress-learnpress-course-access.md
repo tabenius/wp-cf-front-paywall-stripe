@@ -29,8 +29,8 @@ COURSE_ACCESS_BACKEND=wordpress
 NEXT_PUBLIC_WORDPRESS_URL=https://your-wordpress-site.com
 WORDPRESS_GRAPHQL_AUTH_TOKEN=<admin-capable-jwt-or-app-token>
 AUTH_SECRET=<strong-random-string>
-ADMIN_USERNAME=<admin-ui-user>
-ADMIN_PASSWORD=<admin-ui-password>
+ADMIN_EMAILS=<admin1@example.com>,<admin2@example.com>
+ADMIN_PASSWORDS=<password-for-admin1>,<password-for-admin2>
 ```
 
 Notes:
@@ -66,7 +66,7 @@ Enable any provider by setting its env vars:
 ## 5) Admin usage
 
 1. Go to `/admin/login`.
-2. Sign in with `ADMIN_USERNAME`/`ADMIN_PASSWORD`.
+2. Sign in with one email/password pair from `ADMIN_EMAILS`/`ADMIN_PASSWORDS`.
 3. Choose course URI, fee, and allowed users.
 4. Save rules.
 5. Run **Integration Health Check** in `/admin` to verify WordPress GraphQL + Stripe + auth env.

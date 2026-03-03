@@ -38,7 +38,7 @@ export default function AdminLoginClient() {
           type="text"
           value={username}
           onChange={(event) => setUsername(event.target.value)}
-          placeholder="Admin-användarnamn"
+          placeholder="Admin e-post"
           className="w-full border rounded px-3 py-2"
           required
         />

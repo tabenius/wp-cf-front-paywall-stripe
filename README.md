@@ -43,8 +43,8 @@ Minimum for WordPress content:
 Common production variables:
 
 - `AUTH_SECRET`
-- `ADMIN_USERNAME`
-- `ADMIN_PASSWORD`
+- `ADMIN_EMAILS`
+- `ADMIN_PASSWORDS`
 - `COURSE_ACCESS_BACKEND`
 - `WORDPRESS_GRAPHQL_AUTH_TOKEN`
 - `STRIPE_SECRET_KEY`

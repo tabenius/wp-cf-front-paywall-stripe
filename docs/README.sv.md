@@ -19,7 +19,7 @@ Detta projekt kombinerar Next.js, WordPress/WPGraphQL och Stripe för att skydda
 - `COURSE_ACCESS_BACKEND=wordpress`: använder WordPress/LearnPress-backend.
 - `WORDPRESS_GRAPHQL_AUTH_TOKEN`: token för admin-mutationer.
 - `AUTH_SECRET`: signerar auth/session.
-- `ADMIN_USERNAME` och `ADMIN_PASSWORD`: inloggning till admin-UI.
+- `ADMIN_EMAILS` och `ADMIN_PASSWORDS`: kommaseparerade admin-par för inloggning till admin-UI.
 - `STRIPE_SECRET_KEY` och `STRIPE_WEBHOOK_SECRET`: Stripe-betalningar.
 - `COURSE_ACCESS_STORE` och `USER_STORE_BACKEND`: lokal lagring eller Cloudflare KV.
 

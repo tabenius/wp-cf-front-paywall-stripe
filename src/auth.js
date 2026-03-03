@@ -119,11 +119,40 @@ function safeEqual(a, b) {
   return crypto.timingSafeEqual(aBuf, bBuf);
 }
 
-export function validateAdminCredentials(username, password) {
-  const expectedUser = process.env.ADMIN_USERNAME || "";
-  const expectedPass = process.env.ADMIN_PASSWORD || "";
-  if (!expectedUser || !expectedPass) return false;
-  return safeEqual(username, expectedUser) && safeEqual(password, expectedPass);
+function parseCsvEnv(value) {
+  return String(value || "")
+    .split(",")
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+function getAdminCredentialPairs() {
+  const emails = parseCsvEnv(process.env.ADMIN_EMAILS);
+  const passwords = parseCsvEnv(process.env.ADMIN_PASSWORDS);
+
+  if (emails.length > 0 && passwords.length > 0 && emails.length === passwords.length) {
+    return emails.map((email, index) => ({ email, password: passwords[index] }));
+  }
+
+  const legacyUser = process.env.ADMIN_USERNAME || "";
+  const legacyPass = process.env.ADMIN_PASSWORD || "";
+  if (legacyUser && legacyPass) {
+    return [{ email: legacyUser, password: legacyPass }];
+  }
+
+  return [];
+}
+
+export function isAdminCredentialsConfigured() {
+  return getAdminCredentialPairs().length > 0;
+}
+
+export function validateAdminCredentials(email, password) {
+  const credentials = getAdminCredentialPairs();
+  if (credentials.length === 0) return false;
+  return credentials.some(
+    (credential) => safeEqual(email, credential.email) && safeEqual(password, credential.password),
+  );
 }
 
 export function createAdminSessionToken() {
