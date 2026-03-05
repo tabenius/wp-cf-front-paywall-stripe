@@ -42,8 +42,9 @@ export async function fetchGraphQL(query, variables = {}, revalidate = null) {
     const contentType = response.headers.get("content-type") || "";
 
     if (!response.ok || !contentType.includes("application/json")) {
+      const text = await response.text().catch(() => "<unable to read body>");
       console.error(
-        `Invalid GraphQL response: ${response.status} ${response.statusText}`,
+        `Invalid GraphQL response: ${response.status} ${response.statusText} / content-type=${contentType} / body=${text}`,
       );
       return {};
     }
