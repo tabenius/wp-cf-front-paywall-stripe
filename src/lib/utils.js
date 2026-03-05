@@ -1,4 +1,3 @@
-import getConfig from "next/config";
 import { fetchGraphQL } from "../lib/client";
 
 export function formatDate(dateString) {
@@ -41,8 +40,7 @@ export async function getPosts({
 }
 
 export function getPostsPerPage() {
-  const { publicRuntimeConfig } = getConfig() || {};
-  return publicRuntimeConfig?.wordPressDisplaySettings?.postsPerPage || 10;
+  return 10;
 }
 
 export function createExcerpt(content, length = 150) {
