@@ -22,7 +22,7 @@ export default function MobileNav({ items, authLinks }) {
   }, [open]);
 
   const menuItemClass =
-    "block font-[family-name:var(--font-montserrat)] text-[16px] font-normal py-3 border-b border-[#f0d0d0] hover:text-[#6d003e]";
+    "block font-[family-name:var(--font-montserrat)] text-[13px] font-normal py-[6px] border-b border-[#f0d0d0] hover:text-[#6d003e] leading-tight";
 
   const overlay = (
     <>
@@ -40,17 +40,17 @@ export default function MobileNav({ items, authLinks }) {
           open ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        <div className="flex justify-end p-4">
+        <div className="flex justify-end p-3">
           <button
             type="button"
             onClick={() => setOpen(false)}
-            className="w-10 h-10 flex items-center justify-center text-2xl"
+            className="w-8 h-8 flex items-center justify-center text-xl"
             aria-label="Stäng meny"
           >
             &times;
           </button>
         </div>
-        <div className="px-6 pb-8">
+        <div className="px-5 pb-4">
           {items.map((item) => (
             <Link
               key={item.href}

@@ -20,7 +20,7 @@ export default async function Header() {
   const menuItemClass =
     "font-[family-name:var(--font-montserrat)] text-[13px] font-normal hover:underline focus:underline whitespace-nowrap";
   const mobileAuthClass =
-    "block font-[family-name:var(--font-montserrat)] text-[16px] font-normal py-3 border-b border-[#f0d0d0] hover:text-[#6d003e]";
+    "block font-[family-name:var(--font-montserrat)] text-[13px] font-normal py-[6px] border-b border-[#f0d0d0] hover:text-[#6d003e] leading-tight";
 
   const mobileAuthLinks = session?.user ? (
     <SignOutButton className={mobileAuthClass} />
