@@ -1,12 +1,17 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 
 export default function MobileNav({ items, authLinks }) {
   const [open, setOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
-  // Close menu on route change (link click)
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   useEffect(() => {
     if (open) {
       document.body.style.overflow = "hidden";
@@ -19,44 +24,19 @@ export default function MobileNav({ items, authLinks }) {
   const menuItemClass =
     "block font-[family-name:var(--font-montserrat)] text-[16px] font-normal py-3 border-b border-[#f0d0d0] hover:text-[#6d003e]";
 
-  return (
+  const overlay = (
     <>
-      {/* Hamburger button - visible on mobile/tablet, hidden on desktop */}
-      <button
-        type="button"
-        onClick={() => setOpen(!open)}
-        className="lg:hidden relative z-50 flex flex-col justify-center items-center w-10 h-10 gap-[5px]"
-        aria-label={open ? "Stäng meny" : "Öppna meny"}
-        aria-expanded={open}
-      >
-        <span
-          className={`block w-6 h-[2px] bg-[#1a1a1a] transition-transform duration-300 ${
-            open ? "translate-y-[7px] rotate-45" : ""
-          }`}
-        />
-        <span
-          className={`block w-6 h-[2px] bg-[#1a1a1a] transition-opacity duration-300 ${
-            open ? "opacity-0" : ""
-          }`}
-        />
-        <span
-          className={`block w-6 h-[2px] bg-[#1a1a1a] transition-transform duration-300 ${
-            open ? "-translate-y-[7px] -rotate-45" : ""
-          }`}
-        />
-      </button>
-
-      {/* Mobile menu overlay */}
+      {/* Overlay */}
       {open && (
         <div
-          className="fixed inset-0 bg-black/30 z-[998] lg:hidden"
+          className="fixed inset-0 bg-black/30 z-[9998] lg:hidden"
           onClick={() => setOpen(false)}
         />
       )}
 
-      {/* Mobile menu panel */}
+      {/* Slide-out panel */}
       <nav
-        className={`fixed top-0 right-0 h-full w-72 bg-[#fff1f1] z-[999] transform transition-transform duration-300 ease-in-out lg:hidden overflow-y-auto ${
+        className={`fixed top-0 right-0 h-full w-72 bg-[#fff1f1] z-[9999] transform transition-transform duration-300 ease-in-out lg:hidden overflow-y-auto ${
           open ? "translate-x-0" : "translate-x-full"
         }`}
       >
@@ -84,6 +64,38 @@ export default function MobileNav({ items, authLinks }) {
           {authLinks}
         </div>
       </nav>
+    </>
+  );
+
+  return (
+    <>
+      {/* Hamburger button */}
+      <button
+        type="button"
+        onClick={() => setOpen(!open)}
+        className="lg:hidden flex flex-col justify-center items-center w-10 h-10 gap-[5px]"
+        aria-label={open ? "Stäng meny" : "Öppna meny"}
+        aria-expanded={open}
+      >
+        <span
+          className={`block w-6 h-[2px] bg-[#1a1a1a] transition-transform duration-300 ${
+            open ? "translate-y-[7px] rotate-45" : ""
+          }`}
+        />
+        <span
+          className={`block w-6 h-[2px] bg-[#1a1a1a] transition-opacity duration-300 ${
+            open ? "opacity-0" : ""
+          }`}
+        />
+        <span
+          className={`block w-6 h-[2px] bg-[#1a1a1a] transition-transform duration-300 ${
+            open ? "-translate-y-[7px] -rotate-45" : ""
+          }`}
+        />
+      </button>
+
+      {/* Portal overlay + panel to document.body so it escapes header stacking context */}
+      {mounted && createPortal(overlay, document.body)}
     </>
   );
 }
