@@ -8,16 +8,16 @@
   "lang": "sv",
   "copyright": "XTAS / Sofias Academy",
   "logo": {
-    "path": "/wp-content/uploads/2019/04/cropped-xtas_2x.png",
+    "path": "/img/logo.png",
     "width": 400,
     "height": 120,
     "alt": "Xtas logotyp"
   },
   "icons": {
-    "favicon": "/wp-content/uploads/2019/04/cropped-xtas_2x-32x32.png",
-    "apple": "/wp-content/uploads/2019/04/cropped-xtas_2x-180x180.png"
+    "favicon": "/img/favicon.png",
+    "apple": "/img/apple-icon.png"
   },
-  "backgroundImage": "/wp-content/uploads/2026/02/Sofia19-–-Redigerad-scaled.webp",
+  "backgroundImage": "/img/bg.webp",
   "contact": {
     "email": "info@xtas.nu",
     "phone": "+46705274940",

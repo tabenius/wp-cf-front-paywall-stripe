@@ -12,6 +12,31 @@ Frontend-appen använder WordPress som innehålls-CMS och GraphQL-endpoint, men 
 
 Styrkorna är att du kan förlita dig på WordPress för välkända publiceringsflöden, samtidigt som åtkomstkontroll, digital nedladdning, eventregistrering och flexibel paketering hanteras av Next.js + Cloudflare-ramverket. Det gör det enkelt att lägga till fler digitala produkter, bundle-priser, gratis registreringar, och att växa till exempelvis premium-evenemang utan att ändra WordPress själva.
 
+## WordPress-plugins
+
+### Obligatoriska
+
+| Plugin | Syfte |
+|--------|-------|
+| [WPGraphQL](https://www.wpgraphql.com/) | Exponerar WordPress-innehåll som ett GraphQL-API. Hela appen bygger på detta. |
+
+### Rekommenderade
+
+| Plugin | Syfte | Miljövariabel |
+|--------|-------|---------------|
+| [LearnPress](https://wordpress.org/plugins/learnpress/) | LMS för att skapa och sälja kurser. | `NEXT_PUBLIC_WORDPRESS_LEARNPRESS=1` |
+| Articulate-LearnPress-Stripe mu-plugin | Registrerar LearnPress CPT:er (`lp_course`, `lp_lesson`) i WPGraphQL med fält som `price`, `duration`, `curriculum`. Se `docs/wordpress/mu-plugins/`. | (samma som ovan) |
+| [WPGraphQL Content Blocks](https://github.com/wpengine/wp-graphql-content-blocks) | Exponerar Gutenberg-blockdata som strukturerade GraphQL-fält istället för rå HTML. | `NEXT_PUBLIC_WORDPRESS_EDITOR_BLOCKS=1` |
+| Ett Event CPT-plugin | Valfritt plugin som registrerar en `Event`-posttyp i WPGraphQL (t.ex. The Events Calendar + WPGraphQL-tillägg). | `NEXT_PUBLIC_WORDPRESS_EVENT_CPT=1` |
+| [WebP Express](https://wordpress.org/plugins/webp-express/) eller [ShortPixel](https://wordpress.org/plugins/shortpixel-image-optimiser/) | Konverterar uppladdade bilder till WebP/AVIF för mindre filstorlekar innan de når Cloudflare. | — |
+
+### Valfritt (Cloudflare)
+
+| Funktion | Var man aktiverar |
+|----------|-------------------|
+| Cloudflare Image Resizing | `CLOUDFLARE_IMAGE_RESIZING=1` i `.env` — ändrar storlek och konverterar bilder direkt via `/cdn-cgi/image/` |
+| Cloudflare Polish | Cloudflare-dashboard → Speed → Optimization → Polish (kräver Pro-plan) |
+
 ## Huvudflöden
 
 1. Besökaren öppnar en kurssida.

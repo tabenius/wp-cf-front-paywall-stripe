@@ -6,9 +6,12 @@ const baseUrl = (
   "https://www.xtas.nu"
 ).replace(/\/$/, "");
 
-/** Full URL for a WordPress asset path */
-export function wpAsset(path) {
-  return `${baseUrl}${path}`;
+/** Resolve an asset path — local paths (/img/...) stay as-is, WP paths get prefixed */
+export function wpAsset(assetPath) {
+  if (assetPath.startsWith("/img/") || assetPath.startsWith("http")) {
+    return assetPath;
+  }
+  return `${baseUrl}${assetPath}`;
 }
 
 /** Site configuration with resolved URLs */

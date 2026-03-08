@@ -4,6 +4,31 @@
 
 This project combines Next.js, WordPress/WPGraphQL, and Stripe to protect course content behind login and payment.
 
+## WordPress Plugins
+
+### Required
+
+| Plugin | Purpose |
+|--------|---------|
+| [WPGraphQL](https://www.wpgraphql.com/) | Exposes WordPress content as a GraphQL API. The entire app depends on this. |
+
+### Recommended
+
+| Plugin | Purpose | Env var to enable |
+|--------|---------|-------------------|
+| [LearnPress](https://wordpress.org/plugins/learnpress/) | LMS for creating and selling courses. | `NEXT_PUBLIC_WORDPRESS_LEARNPRESS=1` |
+| Articulate-LearnPress-Stripe mu-plugin | Registers LearnPress CPTs (`lp_course`, `lp_lesson`) in WPGraphQL with custom fields (`price`, `duration`, `curriculum`). See `docs/wordpress/mu-plugins/`. | (same as above) |
+| [WPGraphQL Content Blocks](https://github.com/wpengine/wp-graphql-content-blocks) | Exposes Gutenberg block data as structured GraphQL fields instead of raw HTML. | `NEXT_PUBLIC_WORDPRESS_EDITOR_BLOCKS=1` |
+| An Event CPT plugin | Any plugin registering an `Event` post type in WPGraphQL (e.g. The Events Calendar + WPGraphQL extension). | `NEXT_PUBLIC_WORDPRESS_EVENT_CPT=1` |
+| [WebP Express](https://wordpress.org/plugins/webp-express/) or [ShortPixel](https://wordpress.org/plugins/shortpixel-image-optimiser/) | Converts uploaded images to WebP/AVIF for smaller file sizes before they reach Cloudflare. | — |
+
+### Optional (Cloudflare)
+
+| Feature | Where to enable |
+|---------|-----------------|
+| Cloudflare Image Resizing | `CLOUDFLARE_IMAGE_RESIZING=1` in `.env` — resizes and converts images on the fly via `/cdn-cgi/image/` |
+| Cloudflare Polish | Cloudflare dashboard → Speed → Optimization → Polish (requires Pro plan) |
+
 ## Core flows
 
 1. Visitor opens a course page.

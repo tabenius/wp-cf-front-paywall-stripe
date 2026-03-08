@@ -15,5 +15,5 @@ export default function cloudflareImageLoader({ src, width, quality }) {
   }
 
   // Cloudflare Image Resizing endpoint.
-  return `/cdn-cgi/image/width=${width},quality=${requestedQuality},format=auto/${src}`;
+  return `/cdn-cgi/image/width=${width},quality=${requestedQuality},format=auto,fit=scale-down,sharpen=1/${src}`;
 }
