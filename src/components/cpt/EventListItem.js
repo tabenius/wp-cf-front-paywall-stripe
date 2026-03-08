@@ -3,19 +3,23 @@ import { FeaturedImage } from "../image/FeaturedImage";
 import { formatDate, createExcerpt } from "@/lib/utils";
 
 export default function EventListItem({ post }) {
+  if (!post) return null;
   const { content, eventFields, title, uri } = post;
-  const { date, startTime, endTime } = eventFields;
+  const { date, startTime, endTime } = eventFields ?? {};
 
-  const locations = post.location?.edges?.map((edge) => edge.node.name) || [];
+  const locations =
+    post.location?.edges
+      ?.map((edge) => edge?.node?.name)
+      .filter((name) => typeof name === "string" && name.trim() !== "") || [];
   return (
     <article className="container max-w-4xl px-10 py-6 mx-auto rounded-lg shadow-sm bg-gray-50 mb-4">
       <h2 className="mt-3">
         <Link
-          href={uri}
-          title={title}
+          href={uri || "#"}
+          title={title || ""}
           className="text-2xl font-bold hover:underline"
         >
-          {title}
+          {title || "Untitled"}
         </Link>
       </h2>
 

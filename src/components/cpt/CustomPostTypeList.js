@@ -42,11 +42,13 @@ export default function CustomPostTypeList({
     <>
       <div className="grid post-list gap-4">
         {/* Add your own templates here for different cpt */}
-        {posts.map(({ node }) =>
-          customPostType === "events" ? (
-            <EventListItem key={node.id} post={node} />
-          ) : null,
-        )}
+        {posts.map((edge) => {
+          const node = edge?.node;
+          if (!node) return null;
+          return customPostType === "events" ? (
+            <EventListItem key={node.id || Math.random()} post={node} />
+          ) : null;
+        })}
       </div>
 
       {pageInfo.hasNextPage && (

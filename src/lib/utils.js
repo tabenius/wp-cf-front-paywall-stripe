@@ -1,8 +1,10 @@
 import { fetchGraphQL } from "../lib/client";
 
 export function formatDate(dateString) {
+  if (!dateString) return "";
   const date = new Date(dateString);
-  return date.toLocaleDateString("en-US", {
+  if (Number.isNaN(date.getTime())) return String(dateString);
+  return date.toLocaleDateString("sv-SE", {
     year: "numeric",
     month: "long",
     day: "numeric",

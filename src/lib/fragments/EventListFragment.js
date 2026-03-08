@@ -1,4 +1,13 @@
-export const EventListFragment = `
+/**
+ * Event list fragment — only available when the Event CPT is registered in WPGraphQL.
+ * Set NEXT_PUBLIC_WORDPRESS_EVENT_CPT=1 to enable.
+ */
+const enabled =
+  typeof process !== "undefined" &&
+  process.env.NEXT_PUBLIC_WORDPRESS_EVENT_CPT === "1";
+
+export const EventListFragment = enabled
+  ? `
 fragment EventListFragment on Event {
     id
     title
@@ -31,4 +40,5 @@ fragment EventListFragment on Event {
       endTime
     }
   }
-`;
+`
+  : "";

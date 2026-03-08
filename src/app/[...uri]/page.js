@@ -126,10 +126,10 @@ export async function generateMetadata({ params: paramsPromise }) {
 }
 
 function buildJsonLd(node, uri) {
-  const type = node.__typename;
-  const title = node.title || "";
-  const description = node.content ? makeExcerpt(node.content) : "";
-  const image = node.featuredImage?.node?.sourceUrl;
+  const type = node?.__typename;
+  const title = node?.title || "";
+  const description = node?.content ? makeExcerpt(node.content) : "";
+  const image = node?.featuredImage?.node?.sourceUrl;
   const url = `${site.url}${uri}`;
 
   if (type === "Post") {
@@ -143,7 +143,7 @@ function buildJsonLd(node, uri) {
       publisher: {
         "@type": "Organization",
         name: site.name,
-        url: siteUrl,
+        url: site.url,
       },
     };
   }
@@ -159,7 +159,25 @@ function buildJsonLd(node, uri) {
       provider: {
         "@type": "Organization",
         name: site.name,
-        url: siteUrl,
+        url: site.url,
+      },
+    };
+  }
+
+  if (type === "Event") {
+    const eventFields = node?.eventFields ?? {};
+    return {
+      "@context": "https://schema.org",
+      "@type": "Event",
+      name: title,
+      description,
+      url,
+      ...(image ? { image } : {}),
+      ...(eventFields.date ? { startDate: eventFields.date } : {}),
+      organizer: {
+        "@type": "Organization",
+        name: site.name,
+        url: site.url,
       },
     };
   }
