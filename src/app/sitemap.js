@@ -1,4 +1,4 @@
-import { fetchGraphQL } from "@/lib/client";
+import { fetchGraphQL, hasGraphQLType } from "@/lib/client";
 import site from "@/lib/site";
 
 const siteUrl = site.url;
@@ -49,8 +49,8 @@ export default async function sitemap() {
     }
   } catch {}
 
-  // Fetch LearnPress courses
-  if (process.env.NEXT_PUBLIC_WORDPRESS_LEARNPRESS === "1") {
+  // Fetch LearnPress courses (auto-detected via schema introspection)
+  if (await hasGraphQLType("LpCourse")) {
     try {
       const courseData = await fetchGraphQL(
         `{ lpCourses(first: 100) { edges { node { uri modified } } } }`,

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { fetchGraphQL } from "@/lib/client";
+import { fetchGraphQL, hasGraphQLType } from "@/lib/client";
 import { FeaturedImage } from "@/components/image/FeaturedImage";
 import site from "@/lib/site";
 
@@ -39,13 +39,13 @@ const LIST_COURSES_QUERY = `
 `;
 
 export default async function CoursesPage() {
-  if (process.env.NEXT_PUBLIC_WORDPRESS_LEARNPRESS !== "1") {
+  const hasLpCourse = await hasGraphQLType("LpCourse");
+  if (!hasLpCourse) {
     return (
       <main className="max-w-4xl mx-auto px-6 py-24">
         <h1 className="text-4xl font-bold mb-6">Onlinekurser</h1>
         <p className="text-gray-600">
-          Kurssidan ar inte aktiverad. Satt{" "}
-          <code>NEXT_PUBLIC_WORDPRESS_LEARNPRESS=1</code> for att aktivera.
+          Kurssidan kräver LearnPress med WPGraphQL-stöd.
         </p>
       </main>
     );

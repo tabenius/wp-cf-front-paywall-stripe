@@ -1,8 +1,8 @@
 // Catch all template
 import { notFound } from "next/navigation";
 import { redirect } from "next/navigation";
-import { SingleEventFragment } from "@/lib/fragments/SingleEventFragment";
-import { LpCourseFragment } from "@/lib/fragments/LpCourseFragment";
+import { getSingleEventFragment } from "@/lib/fragments/SingleEventFragment";
+import { getLpCourseFragment } from "@/lib/fragments/LpCourseFragment";
 import { SinglePageFragment } from "@/lib/fragments/SinglePageFragment";
 import { SinglePostFragment } from "@/lib/fragments/SinglePostFragment";
 import Page from "@/components/single/Page";
@@ -22,14 +22,19 @@ import { fetchStripeCheckoutSession, isStripeEnabled } from "@/lib/stripe";
 import site from "@/lib/site";
 
 // See WPGraphQL docs on nodeByUri: https://www.wpgraphql.com/2021/12/23/query-any-page-by-its-path-using-wpgraphql
-// SingleEventFragment is only included when the Event CPT is registered
-const eventFragmentDef = SingleEventFragment ? SingleEventFragment : "";
-const eventFragmentSpread = SingleEventFragment ? "...SingleEventFragment" : "";
-const courseFragmentDef = LpCourseFragment ? LpCourseFragment : "";
-const courseFragmentSpread = LpCourseFragment ? "...LpCourseFragment" : "";
-const GET_CONTENT_QUERY = `
-  ${eventFragmentDef}
-  ${courseFragmentDef}
+
+/** Build the content query dynamically based on which CPTs exist in the schema. */
+async function buildContentQuery() {
+  const [eventFragment, courseFragment] = await Promise.all([
+    getSingleEventFragment(),
+    getLpCourseFragment(),
+  ]);
+  const eventSpread = eventFragment ? "...SingleEventFragment" : "";
+  const courseSpread = courseFragment ? "...LpCourseFragment" : "";
+
+  return `
+  ${eventFragment}
+  ${courseFragment}
   ${SinglePageFragment}
   ${SinglePostFragment}
   query GetNodeByUri($uri: String!) {
@@ -59,20 +64,23 @@ const GET_CONTENT_QUERY = `
       }
       ...SinglePageFragment
       ...SinglePostFragment
-      ${eventFragmentSpread}
-      ${courseFragmentSpread}
+      ${eventSpread}
+      ${courseSpread}
     }
   }
 `;
+}
+
+// Cache the built query so introspection only runs once per process
+let _queryPromise = null;
+function getContentQuery() {
+  if (!_queryPromise) _queryPromise = buildContentQuery();
+  return _queryPromise;
+}
 
 async function fetchContent(uri) {
-  return await fetchGraphQL(
-    GET_CONTENT_QUERY,
-    {
-      uri: uri,
-    },
-    3600, // Caches for 60 minutes
-  );
+  const query = await getContentQuery();
+  return await fetchGraphQL(query, { uri }, 3600);
 }
 
 function stripHtml(html) {

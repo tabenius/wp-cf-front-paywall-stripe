@@ -1,5 +1,33 @@
 import { getWordPressGraphqlAuth } from "@/lib/wordpressGraphqlAuth";
 
+/**
+ * Cache of GraphQL type existence checks.
+ * Populated lazily on first call to hasGraphQLType().
+ */
+const _typeCache = new Map();
+
+/**
+ * Check whether a named type exists in the WPGraphQL schema via introspection.
+ * Results are cached in-memory for the lifetime of the server process.
+ */
+export async function hasGraphQLType(typeName) {
+  if (_typeCache.has(typeName)) return _typeCache.get(typeName);
+  try {
+    const data = await fetchGraphQL(
+      `query IntrospectType($name: String!) { __type(name: $name) { name } }`,
+      { name: typeName },
+      3600,
+    );
+    const exists = !!data?.__type?.name;
+    _typeCache.set(typeName, exists);
+    return exists;
+  } catch {
+    // On error, assume the type does not exist to avoid breaking queries
+    _typeCache.set(typeName, false);
+    return false;
+  }
+}
+
 export async function fetchGraphQL(query, variables = {}, revalidate = null) {
   if (typeof query !== "string" || query.trim().length === 0) {
     console.error("fetchGraphQL called with an invalid query");

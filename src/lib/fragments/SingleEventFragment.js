@@ -1,15 +1,14 @@
+import { hasGraphQLType } from "@/lib/client";
 import { editorBlocksFragment } from "./editorBlocks";
 
 /**
- * Event fragment — only available when the Event CPT is registered in WPGraphQL.
- * Set NEXT_PUBLIC_WORDPRESS_EVENT_CPT=1 to enable.
+ * Event fragment — included only when the Event type exists in WPGraphQL.
+ * Auto-detected via schema introspection (cached).
  */
-const enabled =
-  typeof process !== "undefined" &&
-  process.env.NEXT_PUBLIC_WORDPRESS_EVENT_CPT === "1";
-
-export const SingleEventFragment = enabled
-  ? `
+export async function getSingleEventFragment() {
+  const exists = await hasGraphQLType("Event");
+  if (!exists) return "";
+  return `
 fragment SingleEventFragment on Event {
     __typename
     id
@@ -40,5 +39,5 @@ fragment SingleEventFragment on Event {
       }
     }
   }
-`
-  : "";
+`;
+}

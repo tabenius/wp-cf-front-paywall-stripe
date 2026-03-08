@@ -6,10 +6,10 @@ import {
   listAccessUsers,
   setCourseAccess,
 } from "@/lib/courseAccess";
-import { fetchGraphQL } from "@/lib/client";
+import { fetchGraphQL, hasGraphQLType } from "@/lib/client";
 
 async function fetchLearnPressCourses() {
-  if (process.env.NEXT_PUBLIC_WORDPRESS_LEARNPRESS !== "1") return [];
+  if (!(await hasGraphQLType("LpCourse"))) return [];
   try {
     const data = await fetchGraphQL(
       `{ lpCourses(first: 100) { edges { node { databaseId uri title price priceRendered duration } } } }`,

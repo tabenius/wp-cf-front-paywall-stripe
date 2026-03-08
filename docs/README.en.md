@@ -16,10 +16,10 @@ This project combines Next.js, WordPress/WPGraphQL, and Stripe to protect course
 
 | Plugin | Purpose | Env var to enable |
 |--------|---------|-------------------|
-| [LearnPress](https://wordpress.org/plugins/learnpress/) | LMS for creating and selling courses. | `NEXT_PUBLIC_WORDPRESS_LEARNPRESS=1` |
-| Articulate-LearnPress-Stripe mu-plugin | Registers LearnPress CPTs (`lp_course`, `lp_lesson`) in WPGraphQL with custom fields (`price`, `duration`, `curriculum`). See `docs/wordpress/mu-plugins/`. | (same as above) |
+| [LearnPress](https://wordpress.org/plugins/learnpress/) | LMS for creating and selling courses. | Auto-detected |
+| Articulate-LearnPress-Stripe mu-plugin | Registers LearnPress CPTs (`lp_course`, `lp_lesson`) in WPGraphQL with custom fields (`price`, `duration`, `curriculum`). See `docs/wordpress/mu-plugins/`. | Auto-detected |
 | [WPGraphQL Content Blocks](https://github.com/wpengine/wp-graphql-content-blocks) | Exposes Gutenberg block data as structured GraphQL fields instead of raw HTML. | `NEXT_PUBLIC_WORDPRESS_EDITOR_BLOCKS=1` |
-| An Event CPT plugin | Any plugin registering an `Event` post type in WPGraphQL (e.g. The Events Calendar + WPGraphQL extension). | `NEXT_PUBLIC_WORDPRESS_EVENT_CPT=1` |
+| An Event CPT plugin | Any plugin registering an `Event` post type in WPGraphQL (e.g. The Events Calendar + WPGraphQL extension). | Auto-detected |
 | [WebP Express](https://wordpress.org/plugins/webp-express/) or [ShortPixel](https://wordpress.org/plugins/shortpixel-image-optimiser/) | Converts uploaded images to WebP/AVIF for smaller file sizes before they reach Cloudflare. | — |
 
 ### Optional (Cloudflare)
@@ -64,19 +64,19 @@ If both a username and an application password are set, Basic auth takes precede
 
 ## Optional WPGraphQL Features
 
-Some GraphQL fragment fields require specific WordPress plugins. They are disabled by default and can be enabled via environment variables:
+Some GraphQL fragment fields require specific WordPress plugins. Event CPT and LearnPress are **auto-detected** via GraphQL schema introspection — no env vars needed. Editor Blocks still requires an explicit opt-in:
 
-| Feature | Env var | Required plugin |
-|---------|---------|-----------------|
+| Feature | How enabled | Required plugin |
+|---------|-------------|-----------------|
 | Editor Blocks (Gutenberg block data) | `NEXT_PUBLIC_WORDPRESS_EDITOR_BLOCKS=1` | [WPGraphQL Content Blocks](https://github.com/wpengine/wp-graphql-content-blocks) |
-| Event CPT | `NEXT_PUBLIC_WORDPRESS_EVENT_CPT=1` | A plugin that registers an `Event` post type in WPGraphQL |
-| LearnPress courses | `NEXT_PUBLIC_WORDPRESS_LEARNPRESS=1` | LearnPress + the `Articulate-LearnPress-Stripe` mu-plugin (see `docs/wordpress/mu-plugins/`) |
+| Event CPT | Auto-detected | A plugin that registers an `Event` post type in WPGraphQL |
+| LearnPress courses | Auto-detected | LearnPress + the `Articulate-LearnPress-Stripe` mu-plugin (see `docs/wordpress/mu-plugins/`) |
 
-When disabled, queries omit these fields entirely so they never cause schema errors. Content rendering falls back to the `content` HTML field when `editorBlocks` is unavailable.
+When a type is not detected, queries omit these fields entirely so they never cause schema errors. Content rendering falls back to the `content` HTML field when `editorBlocks` is unavailable.
 
 ## LearnPress Integration
 
-When `NEXT_PUBLIC_WORDPRESS_LEARNPRESS=1` is set and the mu-plugin is installed:
+When the `LpCourse` type is detected in the WPGraphQL schema (mu-plugin installed):
 
 - `/courses` lists all LearnPress courses with price, duration, and featured image.
 - Individual course pages (`/courses/<slug>`) are rendered via the catch-all route with the app's auth/paywall flow.

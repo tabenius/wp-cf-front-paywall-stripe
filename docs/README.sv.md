@@ -24,10 +24,10 @@ Styrkorna är att du kan förlita dig på WordPress för välkända publicerings
 
 | Plugin | Syfte | Miljövariabel |
 |--------|-------|---------------|
-| [LearnPress](https://wordpress.org/plugins/learnpress/) | LMS för att skapa och sälja kurser. | `NEXT_PUBLIC_WORDPRESS_LEARNPRESS=1` |
-| Articulate-LearnPress-Stripe mu-plugin | Registrerar LearnPress CPT:er (`lp_course`, `lp_lesson`) i WPGraphQL med fält som `price`, `duration`, `curriculum`. Se `docs/wordpress/mu-plugins/`. | (samma som ovan) |
+| [LearnPress](https://wordpress.org/plugins/learnpress/) | LMS för att skapa och sälja kurser. | Autodetekteras |
+| Articulate-LearnPress-Stripe mu-plugin | Registrerar LearnPress CPT:er (`lp_course`, `lp_lesson`) i WPGraphQL med fält som `price`, `duration`, `curriculum`. Se `docs/wordpress/mu-plugins/`. | Autodetekteras |
 | [WPGraphQL Content Blocks](https://github.com/wpengine/wp-graphql-content-blocks) | Exponerar Gutenberg-blockdata som strukturerade GraphQL-fält istället för rå HTML. | `NEXT_PUBLIC_WORDPRESS_EDITOR_BLOCKS=1` |
-| Ett Event CPT-plugin | Valfritt plugin som registrerar en `Event`-posttyp i WPGraphQL (t.ex. The Events Calendar + WPGraphQL-tillägg). | `NEXT_PUBLIC_WORDPRESS_EVENT_CPT=1` |
+| Ett Event CPT-plugin | Valfritt plugin som registrerar en `Event`-posttyp i WPGraphQL (t.ex. The Events Calendar + WPGraphQL-tillägg). | Autodetekteras |
 | [WebP Express](https://wordpress.org/plugins/webp-express/) eller [ShortPixel](https://wordpress.org/plugins/shortpixel-image-optimiser/) | Konverterar uppladdade bilder till WebP/AVIF för mindre filstorlekar innan de når Cloudflare. | — |
 
 ### Valfritt (Cloudflare)
@@ -73,19 +73,19 @@ Om både användarnamn och application password är satta används Basic auth. O
 
 ## Valfria WPGraphQL-funktioner
 
-Vissa GraphQL-fält kräver specifika WordPress-plugins. De är avstängda som standard och aktiveras via miljövariabler:
+Vissa GraphQL-fält kräver specifika WordPress-plugins. Event CPT och LearnPress **autodetekteras** via GraphQL-schemainspektionen — inga miljövariabler behövs. Editor Blocks kräver fortfarande explicit opt-in:
 
-| Funktion | Miljövariabel | Plugin som krävs |
+| Funktion | Hur aktiveras | Plugin som krävs |
 |----------|---------------|------------------|
 | Editor Blocks (Gutenberg-blockdata) | `NEXT_PUBLIC_WORDPRESS_EDITOR_BLOCKS=1` | [WPGraphQL Content Blocks](https://github.com/wpengine/wp-graphql-content-blocks) |
-| Event CPT | `NEXT_PUBLIC_WORDPRESS_EVENT_CPT=1` | Ett plugin som registrerar en `Event`-posttyp i WPGraphQL |
-| LearnPress-kurser | `NEXT_PUBLIC_WORDPRESS_LEARNPRESS=1` | LearnPress + `Articulate-LearnPress-Stripe` mu-plugin (se `docs/wordpress/mu-plugins/`) |
+| Event CPT | Autodetekteras | Ett plugin som registrerar en `Event`-posttyp i WPGraphQL |
+| LearnPress-kurser | Autodetekteras | LearnPress + `Articulate-LearnPress-Stripe` mu-plugin (se `docs/wordpress/mu-plugins/`) |
 
-När de är avstängda utelämnas fälten helt ur GraphQL-frågor, så de aldrig orsakar schemafel. Rendering faller tillbaka på `content`-HTML-fältet om `editorBlocks` inte finns tillgängligt.
+När en typ inte detekteras utelämnas fälten helt ur GraphQL-frågor, så de aldrig orsakar schemafel. Rendering faller tillbaka på `content`-HTML-fältet om `editorBlocks` inte finns tillgängligt.
 
 ## LearnPress-integration
 
-Med `NEXT_PUBLIC_WORDPRESS_LEARNPRESS=1` och mu-pluginet installerat:
+När `LpCourse`-typen detekteras i WPGraphQL-schemat (mu-pluginet installerat):
 
 - `/courses` listar alla LearnPress-kurser med pris, varaktighet och utvald bild.
 - Enskilda kurssidor (`/courses/<slug>`) renderas via catch-all-routen med appens auth/paywall.

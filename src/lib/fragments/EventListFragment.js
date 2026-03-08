@@ -1,13 +1,13 @@
-/**
- * Event list fragment — only available when the Event CPT is registered in WPGraphQL.
- * Set NEXT_PUBLIC_WORDPRESS_EVENT_CPT=1 to enable.
- */
-const enabled =
-  typeof process !== "undefined" &&
-  process.env.NEXT_PUBLIC_WORDPRESS_EVENT_CPT === "1";
+import { hasGraphQLType } from "@/lib/client";
 
-export const EventListFragment = enabled
-  ? `
+/**
+ * Event list fragment — included only when the Event type exists in WPGraphQL.
+ * Auto-detected via schema introspection (cached).
+ */
+export async function getEventListFragment() {
+  const exists = await hasGraphQLType("Event");
+  if (!exists) return "";
+  return `
 fragment EventListFragment on Event {
     id
     title
@@ -40,5 +40,5 @@ fragment EventListFragment on Event {
       endTime
     }
   }
-`
-  : "";
+`;
+}

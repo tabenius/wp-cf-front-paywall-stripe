@@ -1,15 +1,14 @@
+import { hasGraphQLType } from "@/lib/client";
 import { editorBlocksFragment } from "./editorBlocks";
 
 /**
- * LearnPress Course fragment — only available when lp_course is registered
- * in WPGraphQL. Set NEXT_PUBLIC_WORDPRESS_LEARNPRESS=1 to enable.
+ * LearnPress Course fragment — included only when LpCourse exists in WPGraphQL.
+ * Auto-detected via schema introspection (cached).
  */
-const enabled =
-  typeof process !== "undefined" &&
-  process.env.NEXT_PUBLIC_WORDPRESS_LEARNPRESS === "1";
-
-export const LpCourseFragment = enabled
-  ? `
+export async function getLpCourseFragment() {
+  const exists = await hasGraphQLType("LpCourse");
+  if (!exists) return "";
+  return `
 fragment LpCourseFragment on LpCourse {
     __typename
     id
@@ -32,5 +31,5 @@ fragment LpCourseFragment on LpCourse {
       }
     }
   }
-`
-  : "";
+`;
+}
