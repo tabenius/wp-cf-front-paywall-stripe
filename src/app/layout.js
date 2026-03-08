@@ -5,17 +5,16 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import site from "@/lib/site";
 
+// Variable fonts: one file per family covers all weights (vs 5 separate files)
 const montserrat = Montserrat({
   variable: "--font-montserrat",
   subsets: ["latin"],
-  weight: ["400", "700", "900"],
   display: "swap",
 });
 
 const merriweather = Merriweather({
   variable: "--font-merriweather",
   subsets: ["latin"],
-  weight: ["400", "700"],
   display: "swap",
 });
 
