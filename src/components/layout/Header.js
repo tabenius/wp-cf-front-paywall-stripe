@@ -48,7 +48,7 @@ export default async function Header() {
           <Link href="/events/event" className={menuItemClass}>
             Evenemang
           </Link>
-          <Link href="/butik" className={menuItemClass}>
+          <Link href="/shop" className={menuItemClass}>
             Butik
           </Link>
           <Link href="/courses" className={menuItemClass}>
