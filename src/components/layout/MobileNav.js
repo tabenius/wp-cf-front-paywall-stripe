@@ -36,7 +36,7 @@ export default function MobileNav({ items, authLinks }) {
 
       {/* Slide-out panel */}
       <nav
-        className={`fixed top-0 right-0 h-full w-72 bg-[#fff1f1] z-[9999] transform transition-transform duration-300 ease-in-out lg:hidden overflow-y-auto ${
+        className={`fixed top-0 right-0 h-full w-[min(72vw,288px)] bg-[#fff1f1] z-[9999] transform transition-transform duration-300 ease-in-out lg:hidden overflow-y-auto ${
           open ? "translate-x-0" : "translate-x-full"
         }`}
       >
