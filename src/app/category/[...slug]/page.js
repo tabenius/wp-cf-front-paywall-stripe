@@ -18,6 +18,7 @@ const CAT_POSTS_QUERY = `
   }
 `;
 
-export default async function CategoryPage({ params }) {
+export default async function CategoryPage({ params: paramsPromise }) {
+  const params = await paramsPromise;
   return BlogListingTemplate(CAT_POSTS_QUERY, params, "Category");
 }

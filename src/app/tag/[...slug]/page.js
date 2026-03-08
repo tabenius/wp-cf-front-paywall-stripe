@@ -18,6 +18,7 @@ const TAG_POSTS_QUERY = `
   }
 `;
 
-export default async function TagPage({ params }) {
+export default async function TagPage({ params: paramsPromise }) {
+  const params = await paramsPromise;
   return BlogListingTemplate(TAG_POSTS_QUERY, params, "Tag");
 }

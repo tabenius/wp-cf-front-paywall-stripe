@@ -12,7 +12,8 @@ export const metadata = {
   alternates: { canonical: "/shop" },
 };
 
-export default async function ShopPage({ searchParams }) {
+export default async function ShopPage({ searchParams: searchParamsPromise }) {
+  const searchParams = await searchParamsPromise;
   const session = await auth();
   const userEmail = session?.user?.email || "";
 

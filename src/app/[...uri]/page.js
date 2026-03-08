@@ -85,7 +85,8 @@ function makeExcerpt(content, maxLen = 160) {
   return text.slice(0, maxLen).replace(/\s\S*$/, "") + "…";
 }
 
-export async function generateMetadata({ params }) {
+export async function generateMetadata({ params: paramsPromise }) {
+  const params = await paramsPromise;
   const uriSegments = Array.isArray(params?.uri) ? params.uri : [];
   const uri =
     uriSegments.length > 0
@@ -173,7 +174,9 @@ function buildJsonLd(node, uri) {
   };
 }
 
-export default async function ContentPage({ params, searchParams }) {
+export default async function ContentPage({ params: paramsPromise, searchParams: searchParamsPromise }) {
+  const params = await paramsPromise;
+  const searchParams = await searchParamsPromise;
   const uriSegments = Array.isArray(params?.uri) ? params.uri : [];
   const normalizedSegments = uriSegments
     .filter((segment) => typeof segment === "string")

@@ -6,7 +6,9 @@ import { grantCourseAccess } from "@/lib/courseAccess";
 import { getDigitalProductBySlug } from "@/lib/digitalProducts";
 import { fetchStripeCheckoutSession, isStripeEnabled } from "@/lib/stripe";
 
-export default async function ShopProductPage({ params, searchParams }) {
+export default async function ShopProductPage({ params: paramsPromise, searchParams: searchParamsPromise }) {
+  const params = await paramsPromise;
+  const searchParams = await searchParamsPromise;
   const slug = typeof params?.slug === "string" ? params.slug : "";
   const product = await getDigitalProductBySlug(slug);
   if (!product || !product.active) notFound();
@@ -62,7 +64,8 @@ export default async function ShopProductPage({ params, searchParams }) {
   );
 }
 
-export async function generateMetadata({ params }) {
+export async function generateMetadata({ params: paramsPromise }) {
+  const params = await paramsPromise;
   const slug = typeof params?.slug === "string" ? params.slug : "";
   const product = await getDigitalProductBySlug(slug);
   if (!product) {
