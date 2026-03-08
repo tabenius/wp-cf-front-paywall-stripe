@@ -1,3 +1,5 @@
+import { editorBlocksFragment } from "./editorBlocks";
+
 export const SinglePageFragment = `
   fragment SinglePageFragment on Page {
     __typename
@@ -15,20 +17,6 @@ export const SinglePageFragment = `
         }
       }
     }
-    editorBlocks(flat: false) {
-      name
-      renderedHtml
-      attributesJSON
-      innerBlocks {
-        name
-        renderedHtml
-        attributesJSON
-        innerBlocks {
-          name
-          renderedHtml
-          attributesJSON
-        }
-      }
-    }
+    ${editorBlocksFragment}
   }
 `;

@@ -1,3 +1,5 @@
+import { editorBlocksFragment } from "./editorBlocks";
+
 export const SingleEventFragment = `
 fragment SingleEventFragment on Event {
     __typename
@@ -5,21 +7,7 @@ fragment SingleEventFragment on Event {
     uri
     title
     content
-    editorBlocks(flat: false) {
-      name
-      renderedHtml
-      attributesJSON
-      innerBlocks {
-        name
-        renderedHtml
-        attributesJSON
-        innerBlocks {
-          name
-          renderedHtml
-          attributesJSON
-        }
-      }
-    }
+    ${editorBlocksFragment}
     eventFields {
       date
       startTime

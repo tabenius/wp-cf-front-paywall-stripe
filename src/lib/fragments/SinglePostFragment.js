@@ -1,3 +1,5 @@
+import { editorBlocksFragment } from "./editorBlocks";
+
 export const SinglePostFragment = `
   fragment Comment on Comment {
     id
@@ -27,21 +29,7 @@ export const SinglePostFragment = `
         }
       }
     }
-    editorBlocks(flat: false) {
-      name
-      renderedHtml
-      attributesJSON
-      innerBlocks {
-        name
-        renderedHtml
-        attributesJSON
-        innerBlocks {
-          name
-          renderedHtml
-          attributesJSON
-        }
-      }
-    }
+    ${editorBlocksFragment}
     comments {
       edges {
         node {
