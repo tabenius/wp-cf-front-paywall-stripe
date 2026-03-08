@@ -57,7 +57,7 @@ const Footer = () => {
                 </Link>
               </li>
               <li className={menuItemClass}>
-                <Link href="/blog-section" className={menuItemLinkClass}>
+                <Link href="/blog" className={menuItemLinkClass}>
                   Blog
                 </Link>
               </li>
@@ -67,7 +67,7 @@ const Footer = () => {
                 </Link>
               </li>
               <li className={menuItemClass}>
-                <Link href="/events/event" className={menuItemLinkClass}>
+                <Link href="https://www.xtas.nu/events/event/" className={menuItemLinkClass}>
                   Evenemang
                 </Link>
               </li>
@@ -77,7 +77,7 @@ const Footer = () => {
                 </Link>
               </li>
               <li className={menuItemClass}>
-                <Link href="/courses" className={menuItemLinkClass}>
+                <Link href="https://www.xtas.nu/courses/" className={menuItemLinkClass}>
                   Onlinekurser
                 </Link>
               </li>

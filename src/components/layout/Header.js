@@ -39,19 +39,19 @@ export default async function Header() {
           <Link href="/om-sofia-cerne" className={menuItemClass}>
             Om Sofia
           </Link>
-          <Link href="/blog-section" className={menuItemClass}>
+          <Link href="/blog" className={menuItemClass}>
             Blog
           </Link>
           <Link href="/relationsterapi-for-par" className={menuItemClass}>
             Utveckling för par
           </Link>
-          <Link href="/events/event" className={menuItemClass}>
+          <Link href="https://www.xtas.nu/events/event/" className={menuItemClass}>
             Evenemang
           </Link>
           <Link href="/shop" className={menuItemClass}>
             Butik
           </Link>
-          <Link href="/courses" className={menuItemClass}>
+          <Link href="https://www.xtas.nu/courses/" className={menuItemClass}>
             Onlinekurser
           </Link>
           <Link href="/admin" className={menuItemClass}>
