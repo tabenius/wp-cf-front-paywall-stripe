@@ -53,6 +53,7 @@ export default function AdminDashboard() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [healthChecks, setHealthChecks] = useState(null);
+  const [webhookUrl, setWebhookUrl] = useState("");
   const [healthLoading, setHealthLoading] = useState(false);
   const [products, setProducts] = useState([]);
   const [productsLoading, setProductsLoading] = useState(false);
@@ -266,6 +267,7 @@ export default function AdminDashboard() {
         throw new Error(json?.error || "Hälsokontrollen misslyckades.");
       }
       setHealthChecks(json.checks || {});
+      if (json.webhookUrl) setWebhookUrl(json.webhookUrl);
     } catch (healthError) {
       const msg =
         healthError instanceof Error ? healthError.message : "Hälsokontrollen misslyckades.";
@@ -323,6 +325,42 @@ export default function AdminDashboard() {
           </ul>
         ) : (
           <p className="text-sm text-gray-600">Kör kontroll för att verifiera integrationer.</p>
+        )}
+
+        {webhookUrl && (
+          <div className="bg-gray-50 border rounded p-4 space-y-2 text-sm">
+            <h3 className="font-semibold">Stripe Webhook</h3>
+            <p className="text-gray-600">
+              Konfigurera i{" "}
+              <a
+                href="https://dashboard.stripe.com/webhooks"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-700 underline"
+              >
+                Stripe Dashboard → Developers → Webhooks
+              </a>
+            </p>
+            <div className="flex items-center gap-2">
+              <label className="text-gray-500 shrink-0">Endpoint-URL:</label>
+              <code className="bg-white border rounded px-2 py-1 text-xs break-all flex-1 select-all">
+                {webhookUrl}
+              </code>
+              <button
+                type="button"
+                onClick={() => {
+                  navigator.clipboard.writeText(webhookUrl);
+                }}
+                className="px-2 py-1 rounded border hover:bg-gray-100 text-xs whitespace-nowrap"
+                title="Kopiera till urklipp"
+              >
+                Kopiera
+              </button>
+            </div>
+            <p className="text-gray-500">
+              Event att lyssna på: <code className="bg-white border rounded px-1 text-xs">checkout.session.completed</code>
+            </p>
+          </div>
         )}
       </div>
 

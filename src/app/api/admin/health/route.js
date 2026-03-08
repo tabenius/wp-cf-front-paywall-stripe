@@ -95,8 +95,14 @@ export async function GET(request) {
       : { ok: true, message: "WordPress-läge är inte aktiverat." };
   const stripeCheck = await checkStripe();
 
+  // Build the webhook URL from the request
+  const requestUrl = new URL(request.url);
+  const origin = requestUrl.origin;
+  const webhookUrl = `${origin}/api/stripe/webhook`;
+
   return NextResponse.json({
     ok: true,
+    webhookUrl,
     checks: {
       backend: { ok: true, message: `Backend: ${backend}` },
       adminCredentials: {
