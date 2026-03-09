@@ -190,6 +190,8 @@
     "payAndUnlockCourse": "Pay and unlock the course",
     "payAndUnlockEvent": "Pay and unlock the event",
     "paymentNotAvailable": "Payment is not available yet. Contact the administrator.",
+    "signInToAccess": "Sign in to access this {contentKind}.",
+    "signInButton": "Sign in",
     "checkoutFailed": "Could not start the payment."
   },
   "shop": {

@@ -249,12 +249,8 @@ export default async function ContentPage({ params: paramsPromise, searchParams:
   if (isProductType) return <>{ldScript}<Product data={node} /></>;
   if (isPaidAccessType) {
     const session = await auth();
-    if (!session?.user) {
-      redirect(`/auth/signin?callbackUrl=${encodeURIComponent(uri)}`);
-    }
-
-    const userEmail = session.user.email || "";
-    let canAccess = await hasCourseAccess(uri, userEmail);
+    const userEmail = session?.user?.email || "";
+    let canAccess = userEmail ? await hasCourseAccess(uri, userEmail) : false;
     const checkoutStatus =
       typeof searchParams?.checkout === "string" ? searchParams.checkout : "";
     const checkoutSessionId =

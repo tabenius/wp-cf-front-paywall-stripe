@@ -190,6 +190,8 @@
     "payAndUnlockCourse": "Betala och lås upp kursen",
     "payAndUnlockEvent": "Betala och lås upp händelsen",
     "paymentNotAvailable": "Betalning är inte tillgänglig ännu. Kontakta administratören.",
+    "signInToAccess": "Logga in för att få tillgång till denna {contentKind}.",
+    "signInButton": "Logga in",
     "checkoutFailed": "Det gick inte att starta betalningen."
   },
   "shop": {
