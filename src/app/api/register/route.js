@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createUser } from "@/lib/userStore";
+import { createSessionCookie, createSessionToken } from "@/auth";
 import { t } from "@/lib/i18n";
 
 function badRequest(message) {
@@ -25,7 +26,13 @@ export async function POST(request) {
     }
 
     const user = await createUser({ name, email, password });
-    return NextResponse.json({ ok: true, user }, { status: 201 });
+
+    // Set session cookie directly — avoids a second KV read that may fail
+    // due to eventual consistency on Cloudflare Workers.
+    const token = createSessionToken(user);
+    const response = NextResponse.json({ ok: true, user }, { status: 201 });
+    response.headers.append("Set-Cookie", createSessionCookie(token));
+    return response;
   } catch (error) {
     const message =
       error instanceof Error ? error.message : "";

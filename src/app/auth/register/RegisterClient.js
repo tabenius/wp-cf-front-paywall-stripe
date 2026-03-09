@@ -96,18 +96,7 @@ export default function RegisterClient() {
         return;
       }
 
-      const loginResponse = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: normalizedEmail, password }),
-      });
-      const loginJson = await loginResponse.json();
-      if (!loginResponse.ok || !loginJson?.ok) {
-        setError(t("authErrors.accountCreatedLoginFailed"));
-        setLoading(false);
-        return;
-      }
-
+      // Registration sets the session cookie directly — no separate login needed.
       router.push("/");
     } catch {
       setError(t("authErrors.registerNetworkError"));
