@@ -184,7 +184,7 @@
   },
   "paywall": {
     "content": "Innehåll",
-    "loggedInAs": "Du är inloggad som {email}, men du har ännu inte tillgång till den här {contentKind}.",
+    "loggedInAs": "Du är inloggad som {email}, men du har ännu inte tillgång till denna {contentKind}.",
     "fee": "Avgift",
     "redirectingToStripe": "Skickar dig till Stripe...",
     "payAndUnlockCourse": "Betala och lås upp kursen",
