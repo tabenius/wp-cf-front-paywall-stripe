@@ -93,7 +93,7 @@ export default function Paywall({
             <div className="flex justify-center gap-4">
               <Link
                 href={`/auth/signin?callbackUrl=${encodeURIComponent(courseUri)}`}
-                className="inline-block px-8 py-3 rounded bg-gray-800 text-white hover:bg-gray-700"
+                className="inline-block px-8 py-3 rounded border border-gray-800 text-gray-800 hover:bg-gray-100"
               >
                 {t("common.signIn")}
               </Link>
