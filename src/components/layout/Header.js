@@ -25,7 +25,12 @@ export default async function Header() {
     "block font-[family-name:var(--font-montserrat)] text-[13px] font-normal py-[6px] border-b border-[#f0d0d0] hover:text-[#6d003e] leading-tight";
 
   const mobileAuthLinks = session?.user ? (
-    <SignOutButton className={mobileAuthClass} />
+    <>
+      <span className="block text-[13px] font-[family-name:var(--font-montserrat)] text-gray-500 py-[6px]">
+        {session.user.name || session.user.email}
+      </span>
+      <SignOutButton className={mobileAuthClass} />
+    </>
   ) : (
     <>
       <Link href="/auth/signin" className={mobileAuthClass}>
@@ -67,6 +72,7 @@ export default async function Header() {
           <DarkModeToggle />
           <UserMenu
             isLoggedIn={!!session?.user}
+            userName={session?.user?.name || session?.user?.email || ""}
             signOutButton={userMenuSignOut}
           />
         </div>

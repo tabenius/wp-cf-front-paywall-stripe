@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { t } from "@/lib/i18n";
 
-export default function UserMenu({ isLoggedIn, signOutButton }) {
+export default function UserMenu({ isLoggedIn, userName, signOutButton }) {
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
 
@@ -46,6 +46,11 @@ export default function UserMenu({ isLoggedIn, signOutButton }) {
 
       {open && (
         <div className="absolute right-0 top-full mt-1 bg-[#fff1f1] border border-[#f0d0d0] rounded shadow-lg py-1 min-w-[140px] z-50">
+          {isLoggedIn && userName && (
+            <span className="block px-4 py-2 text-[13px] font-[family-name:var(--font-montserrat)] text-gray-500 border-b border-[#f0d0d0]">
+              {userName}
+            </span>
+          )}
           <Link href="/admin" className={itemClass} onClick={() => setOpen(false)}>
             {t("common.admin")}
           </Link>
