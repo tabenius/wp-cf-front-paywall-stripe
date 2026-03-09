@@ -8,6 +8,8 @@ export default function Paywall({
   courseUri,
   courseTitle,
   courseContent,
+  coursePriceRendered,
+  courseDuration,
   userEmail,
   priceCents,
   currency,
@@ -20,6 +22,10 @@ export default function Paywall({
   const kindLabel = contentKind === "event"
     ? t("common.event").toLowerCase()
     : t("common.course").toLowerCase();
+
+  // Show LP price if available, otherwise fall back to access config price
+  const displayPrice = coursePriceRendered
+    || (priceCents != null ? `${(priceCents / 100).toFixed(2)} ${currency.toUpperCase()}` : "");
 
   async function checkout() {
     setError("");
@@ -46,18 +52,20 @@ export default function Paywall({
     window.location.href = json.url;
   }
 
-  const priceBlock = priceCents != null && (
-    <p className="text-gray-700 text-lg">
-      {t("paywall.fee")}:{" "}
-      <strong>
-        {(priceCents / 100).toFixed(2)} {currency.toUpperCase()}
-      </strong>
-    </p>
-  );
-
   return (
     <article className="max-w-2xl mx-auto px-6 py-24 space-y-6">
       <h1 className="text-4xl font-bold text-center">{courseTitle || t("paywall.content")}</h1>
+
+      {(displayPrice || courseDuration) && (
+        <div className="flex justify-center gap-6 text-lg text-gray-700">
+          {displayPrice && (
+            <span><strong>{t("paywall.fee")}:</strong> {displayPrice}</span>
+          )}
+          {courseDuration && (
+            <span><strong>{t("paywall.duration")}:</strong> {courseDuration}</span>
+          )}
+        </div>
+      )}
 
       {courseContent && (
         <div
@@ -72,7 +80,6 @@ export default function Paywall({
             <p className="text-gray-700">
               {t("paywall.loggedInAs", { email: userEmail, contentKind: kindLabel })}
             </p>
-            {priceBlock}
             <button
               type="button"
               onClick={checkout}
@@ -89,8 +96,13 @@ export default function Paywall({
             <p className="text-gray-700">
               {t("paywall.signInToAccess", { contentKind: kindLabel })}
             </p>
-            {priceBlock}
             <div className="flex justify-center gap-4">
+              <Link
+                href={`/auth/signin?callbackUrl=${encodeURIComponent(courseUri)}`}
+                className="inline-block px-8 py-3 rounded bg-gray-800 text-white hover:bg-gray-700"
+              >
+                {t("paywall.buyNow")}
+              </Link>
               <Link
                 href={`/auth/signin?callbackUrl=${encodeURIComponent(courseUri)}`}
                 className="inline-block px-8 py-3 rounded border border-gray-800 text-gray-800 hover:bg-gray-100"
