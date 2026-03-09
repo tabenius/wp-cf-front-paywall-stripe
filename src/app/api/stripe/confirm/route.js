@@ -2,19 +2,20 @@ import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { grantCourseAccess } from "@/lib/courseAccess";
 import { fetchStripeCheckoutSession, isStripeEnabled } from "@/lib/stripe";
+import { t } from "@/lib/i18n";
 
 export async function POST(request) {
   const session = await auth();
   if (!session?.user?.email) {
     return NextResponse.json(
-      { ok: false, error: "Du behöver vara inloggad för att verifiera betalning." },
+      { ok: false, error: t("apiErrors.confirmLoginRequired") },
       { status: 401 },
     );
   }
   if (!isStripeEnabled()) {
     console.error("Stripe confirmation unavailable: STRIPE_SECRET_KEY is not configured");
     return NextResponse.json(
-      { ok: false, error: "Betalningsverifiering är tillfälligt otillgänglig." },
+      { ok: false, error: t("apiErrors.confirmUnavailable") },
       { status: 400 },
     );
   }
@@ -31,7 +32,7 @@ export async function POST(request) {
     if (!sessionId || !courseUri) {
       console.error("Stripe confirmation rejected: missing session ID or course URI");
       return NextResponse.json(
-        { ok: false, error: "Vi kunde inte verifiera dina betalningsuppgifter." },
+        { ok: false, error: t("apiErrors.confirmMissingData") },
         { status: 400 },
       );
     }
@@ -47,7 +48,7 @@ export async function POST(request) {
 
     if (paymentStatus !== "paid") {
       return NextResponse.json(
-        { ok: false, error: "Din betalning är inte slutförd ännu." },
+        { ok: false, error: t("apiErrors.confirmNotPaid") },
         { status: 400 },
       );
     }
@@ -56,7 +57,7 @@ export async function POST(request) {
         `Stripe confirmation email mismatch: paid=${paidEmail}, session=${session.user.email}`,
       );
       return NextResponse.json(
-        { ok: false, error: "Betalningen matchar inte ditt inloggade konto." },
+        { ok: false, error: t("apiErrors.confirmEmailMismatch") },
         { status: 400 },
       );
     }
@@ -65,7 +66,7 @@ export async function POST(request) {
         `Stripe confirmation course mismatch: paid=${paidCourse}, requested=${courseUri}`,
       );
       return NextResponse.json(
-        { ok: false, error: "Betalningen gäller en annan kurs." },
+        { ok: false, error: t("apiErrors.confirmCourseMismatch") },
         { status: 400 },
       );
     }
@@ -75,7 +76,7 @@ export async function POST(request) {
   } catch (error) {
     console.error("Stripe confirmation failed:", error);
     return NextResponse.json(
-      { ok: false, error: "Vi kunde inte bekräfta betalningen just nu. Försök igen." },
+      { ok: false, error: t("apiErrors.confirmFailed") },
       { status: 400 },
     );
   }

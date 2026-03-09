@@ -2,20 +2,21 @@ import { NextResponse } from "next/server";
 import { getAdminSessionFromCookieHeader } from "@/auth";
 import { getWordPressGraphqlAuth } from "@/lib/wordpressGraphqlAuth";
 import { isS3Upload, uploadToS3 } from "@/lib/s3upload";
+import { t } from "@/lib/i18n";
 
 function unauthorized() {
   return NextResponse.json(
-    { ok: false, error: "Du behöver logga in som administratör." },
+    { ok: false, error: t("apiErrors.adminLoginRequired") },
     { status: 401 },
   );
 }
 
 async function uploadToWordPress(arrayBuffer, file) {
   const wpUrl = (process.env.NEXT_PUBLIC_WORDPRESS_URL || "").replace(/\/+$/, "");
-  if (!wpUrl) throw new Error("WordPress URL saknas.");
+  if (!wpUrl) throw new Error(t("apiErrors.wpUrlMissing"));
 
   const auth = getWordPressGraphqlAuth();
-  if (!auth.authorization) throw new Error("WordPress-autentisering saknas.");
+  if (!auth.authorization) throw new Error(t("apiErrors.wpAuthMissing"));
 
   const response = await fetch(`${wpUrl}/wp-json/wp/v2/media`, {
     method: "POST",
@@ -30,7 +31,7 @@ async function uploadToWordPress(arrayBuffer, file) {
   if (!response.ok) {
     const text = await response.text().catch(() => "");
     console.error("WordPress media upload failed:", response.status, text);
-    throw new Error(`Uppladdning till WordPress misslyckades (${response.status}).`);
+    throw new Error(t("apiErrors.uploadWpFailed", { status: response.status }));
   }
 
   const media = await response.json();
@@ -52,7 +53,7 @@ export async function POST(request) {
     const file = formData.get("file");
     if (!file || typeof file === "string") {
       return NextResponse.json(
-        { ok: false, error: "Ingen fil skickades." },
+        { ok: false, error: t("apiErrors.uploadNoFile") },
         { status: 400 },
       );
     }
@@ -73,7 +74,7 @@ export async function POST(request) {
   } catch (error) {
     console.error("Upload error:", error);
     return NextResponse.json(
-      { ok: false, error: error.message || "Uppladdning misslyckades." },
+      { ok: false, error: error.message || t("apiErrors.uploadFailed") },
       { status: 500 },
     );
   }

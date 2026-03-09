@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
 import DarkModeToggle from "./DarkModeToggle";
+import { t } from "@/lib/i18n";
 
 export default function MobileNav({ items, authLinks }) {
   const [open, setOpen] = useState(false);
@@ -46,7 +47,7 @@ export default function MobileNav({ items, authLinks }) {
             type="button"
             onClick={() => setOpen(false)}
             className="w-8 h-8 flex items-center justify-center text-xl"
-            aria-label="Stäng meny"
+            aria-label={t("nav.closeMenu")}
           >
             &times;
           </button>
@@ -64,7 +65,7 @@ export default function MobileNav({ items, authLinks }) {
           ))}
           <div className="flex items-center gap-2 py-2">
             <DarkModeToggle />
-            <span className="text-[13px] font-[family-name:var(--font-montserrat)]">Mörkt läge</span>
+            <span className="text-[13px] font-[family-name:var(--font-montserrat)]">{t("darkMode.label")}</span>
           </div>
           {authLinks}
         </div>
@@ -79,7 +80,7 @@ export default function MobileNav({ items, authLinks }) {
         type="button"
         onClick={() => setOpen(!open)}
         className="lg:hidden flex flex-col justify-center items-center w-10 h-10 gap-[5px]"
-        aria-label={open ? "Stäng meny" : "Öppna meny"}
+        aria-label={open ? t("nav.closeMenu") : t("nav.openMenu")}
         aria-expanded={open}
       >
         <span

@@ -207,10 +207,24 @@ a:focus {
   filter: brightness(0.25);
 }
 
+/* Header and footer stay light — ensure icons and toggles remain visible */
+.dark-mode header,
+.dark-mode footer {
+  color: #1a1a1a;
+}
+.dark-mode header svg,
+.dark-mode header button {
+  color: #1a1a1a;
+}
+.dark-mode header a {
+  color: #1a1a1a;
+}
+
 /* Content area text and links */
 .dark-mode article,
 .dark-mode .wp-content,
-.dark-mode main {
+.dark-mode main,
+.dark-mode section {
   color: var(--color-foreground);
 }
 .dark-mode article a,
@@ -228,17 +242,38 @@ a:focus {
 .dark-mode article h3,
 .dark-mode article h4,
 .dark-mode article h5,
-.dark-mode article h6 {
+.dark-mode article h6,
+.dark-mode section h1,
+.dark-mode section h2 {
   color: #f5eeee;
 }
 
 /* Paragraphs and prose */
 .dark-mode article p,
+.dark-mode section p,
 .dark-mode .text-gray-800 {
   color: var(--color-foreground) !important;
 }
-.dark-mode .text-gray-600 {
+.dark-mode .text-gray-600,
+.dark-mode .text-gray-700 {
   color: #bbb !important;
+}
+
+/* Gray/dark buttons — improve contrast in both modes */
+.wp-block-button__link.has-dark-gray-color,
+.wp-block-button__link.has-light-gray-background-color {
+  background-color: #444;
+  color: #fff;
+  border-color: #444;
+}
+.wp-block-button.is-style-outline .wp-block-button__link.has-dark-gray-color {
+  background-color: transparent;
+  color: #444;
+  border-color: #444;
+}
+.wp-block-button.is-style-outline .wp-block-button__link.has-dark-gray-color:hover {
+  background-color: #444;
+  color: #fff;
 }
 
 /* Buttons in dark mode */
@@ -246,6 +281,20 @@ a:focus {
 .dark-mode .wp-element-button {
   background-color: var(--color-primary);
   color: #fff;
+}
+.dark-mode .wp-block-button__link.has-dark-gray-color,
+.dark-mode .wp-block-button__link.has-light-gray-background-color {
+  background-color: #ccc;
+  color: #1a1a1a;
+  border-color: #ccc;
+}
+.dark-mode .wp-block-button.is-style-outline .wp-block-button__link {
+  color: #e8e0e0;
+  border-color: #e8e0e0;
+}
+.dark-mode .wp-block-button.is-style-outline .wp-block-button__link:hover {
+  background-color: #e8e0e0;
+  color: #1a1a1a;
 }
 
 /* Paywall and card backgrounds */

@@ -1,5 +1,44 @@
 import { FeaturedImage } from "@/components/image/FeaturedImage";
 import BlocksRenderer from "@/components/blocks/BlocksRenderer";
+import site from "@/lib/site";
+
+/**
+ * Transform WordPress HTML content:
+ * - Add mailto: prefix to bare email links
+ * - Strip site hostname from internal links
+ */
+function transformContent(html) {
+  if (!html) return html;
+
+  // Add mailto: to email links missing it (href="someone@example.com")
+  let result = html.replace(
+    /href="([^"@\s]+@[^"@\s]+\.[^"\s]+)"/g,
+    (match, email) => {
+      if (email.startsWith("mailto:") || email.startsWith("http")) return match;
+      return `href="mailto:${email}"`;
+    },
+  );
+
+  // Strip site URL from internal links to make them relative
+  const wpUrl = (process.env.NEXT_PUBLIC_WORDPRESS_URL || "").replace(/\/+$/, "");
+  const siteUrl = (site.url || "").replace(/\/+$/, "");
+  const origins = [wpUrl, siteUrl].filter(Boolean);
+  for (const origin of origins) {
+    if (!origin) continue;
+    // Escape special regex chars in the URL
+    const escaped = origin.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    result = result.replace(
+      new RegExp(`href="${escaped}(/[^"]*)"`, "g"),
+      'href="$1"',
+    );
+    result = result.replace(
+      new RegExp(`href="${escaped}"`, "g"),
+      'href="/"',
+    );
+  }
+
+  return result;
+}
 
 export default function SingleContent({
   data,
@@ -16,7 +55,7 @@ export default function SingleContent({
         ? safeData.title
         : "";
   const content =
-    typeof safeData.content === "string" ? safeData.content : "";
+    typeof safeData.content === "string" ? transformContent(safeData.content) : "";
   const editorBlocks = Array.isArray(safeData.editorBlocks)
     ? safeData.editorBlocks
     : [];

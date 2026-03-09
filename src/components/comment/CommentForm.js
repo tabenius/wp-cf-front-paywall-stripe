@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { t } from "@/lib/i18n";
+
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export default function CommentForm({
@@ -21,15 +23,15 @@ export default function CommentForm({
     const content = comment.content.trim();
 
     if (author.length < 2) {
-      setLocalError("Namn måste vara minst 2 tecken.");
+      setLocalError(t("comments.nameTooShort"));
       return;
     }
     if (!EMAIL_REGEX.test(authorEmail)) {
-      setLocalError("Ange en giltig e-postadress.");
+      setLocalError(t("comments.invalidEmail"));
       return;
     }
     if (content.length < 3) {
-      setLocalError("Kommentaren är för kort.");
+      setLocalError(t("comments.commentTooShort"));
       return;
     }
 
@@ -47,12 +49,12 @@ export default function CommentForm({
 
   return (
     <fieldset className="max-w-2xl p-6 mx-auto space-y-12">
-      <h2 className="text-2xl font-semibold text-center">Lämna en kommentar</h2>
+      <h2 className="text-2xl font-semibold text-center">{t("comments.title")}</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <input
           type="text"
           name="author"
-          placeholder="Ditt namn"
+          placeholder={t("comments.namePlaceholder")}
           value={comment.author}
           onChange={handleChange}
           minLength={2}
@@ -63,7 +65,7 @@ export default function CommentForm({
         <input
           type="email"
           name="authorEmail"
-          placeholder="Din e-post"
+          placeholder={t("comments.emailPlaceholder")}
           value={comment.authorEmail}
           onChange={handleChange}
           autoComplete="email"
@@ -72,7 +74,7 @@ export default function CommentForm({
         />
         <textarea
           name="content"
-          placeholder="Din kommentar"
+          placeholder={t("comments.commentPlaceholder")}
           value={comment.content}
           onChange={handleChange}
           minLength={3}
@@ -100,7 +102,7 @@ export default function CommentForm({
               ></path>
             </svg>
             <span className="font-medium text-green-700">
-              Kommentaren skickades! Den visas efter granskning.
+              {t("comments.success")}
             </span>
           </div>
         )}
@@ -110,7 +112,7 @@ export default function CommentForm({
           className="w-full bg-orange-600 text-white p-3 cursor-pointer rounded-md hover:bg-orange-700 transition disabled:bg-orange-700"
           disabled={isLoading}
         >
-          {isLoading ? "Skickar..." : "Skicka kommentar"}
+          {isLoading ? t("comments.submitting") : t("comments.submit")}
         </button>
       </form>
     </fieldset>

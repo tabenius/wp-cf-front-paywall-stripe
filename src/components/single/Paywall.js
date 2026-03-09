@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { t } from "@/lib/i18n";
 
 export default function Paywall({
   courseUri,
@@ -17,7 +18,7 @@ export default function Paywall({
   async function checkout() {
     setError("");
     if (!stripeEnabled) {
-      setError("Betalning är inte tillgänglig ännu. Kontakta administratören.");
+      setError(t("paywall.paymentNotAvailable"));
       return;
     }
     setLoading(true);
@@ -33,7 +34,7 @@ export default function Paywall({
     const json = await response.json();
     setLoading(false);
     if (!response.ok || !json?.ok || !json?.url) {
-      setError(json?.error || "Det gick inte att starta betalningen.");
+      setError(json?.error || t("paywall.checkoutFailed"));
       return;
     }
     window.location.href = json.url;
@@ -41,13 +42,12 @@ export default function Paywall({
 
   return (
     <section className="max-w-2xl mx-auto px-6 py-24 space-y-6 text-center">
-      <h1 className="text-4xl font-bold">{courseTitle || "Innehåll"}</h1>
+      <h1 className="text-4xl font-bold">{courseTitle || t("paywall.content")}</h1>
       <p className="text-gray-700">
-        Du är inloggad som <strong>{userEmail}</strong>, men du har ännu inte
-        tillgång till den här {contentKind === "event" ? "händelsen" : "kursen"}.
+        {t("paywall.loggedInAs", { email: userEmail, contentKind: contentKind === "event" ? t("common.event").toLowerCase() : t("common.course").toLowerCase() })}
       </p>
       <p className="text-gray-700">
-        Avgift:{" "}
+        {t("paywall.fee")}:{" "}
         <strong>
           {(priceCents / 100).toFixed(2)} {currency.toUpperCase()}
         </strong>
@@ -59,8 +59,8 @@ export default function Paywall({
         className="px-8 py-3 rounded bg-gray-800 text-white hover:bg-gray-700 disabled:opacity-50"
       >
         {loading
-          ? "Skickar dig till Stripe..."
-          : `Betala och lås upp ${contentKind === "event" ? "händelsen" : "kursen"}`}
+          ? t("paywall.redirectingToStripe")
+          : contentKind === "event" ? t("paywall.payAndUnlockEvent") : t("paywall.payAndUnlockCourse")}
       </button>
       {error ? <p className="text-red-600">{error}</p> : null}
     </section>

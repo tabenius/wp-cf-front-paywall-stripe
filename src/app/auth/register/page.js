@@ -1,8 +1,9 @@
 import RegisterClient from "./RegisterClient";
+import { t } from "@/lib/i18n";
 
-export const metadata = {
-  title: "Registrera",
-};
+export async function generateMetadata() {
+  return { title: t("metadata.register") };
+}
 
 export default function RegisterPage() {
   return <RegisterClient />;

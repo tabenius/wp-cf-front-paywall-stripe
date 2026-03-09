@@ -1,4 +1,5 @@
 import SingleContent from "./SingleContent";
+import { t } from "@/lib/i18n";
 
 export default function Course({ data }) {
   return (
@@ -6,7 +7,7 @@ export default function Course({ data }) {
       data={data}
       meta={
         <p className="text-sm font-semibold uppercase tracking-wide text-gray-600">
-          Kurs
+          {t("common.course")}
         </p>
       }
     />

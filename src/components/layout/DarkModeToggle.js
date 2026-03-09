@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { t } from "@/lib/i18n";
 
 export default function DarkModeToggle() {
   const [dark, setDark] = useState(false);
@@ -34,8 +35,8 @@ export default function DarkModeToggle() {
       type="button"
       onClick={toggle}
       className="flex items-center justify-center w-8 h-8 rounded-full hover:bg-[#f0d0d0] transition-colors"
-      aria-label={dark ? "Ljust läge" : "Mörkt läge"}
-      title={dark ? "Ljust läge" : "Mörkt läge"}
+      aria-label={dark ? t("darkMode.lightMode") : t("darkMode.darkMode")}
+      title={dark ? t("darkMode.lightMode") : t("darkMode.darkMode")}
     >
       {dark ? (
         /* Sun icon */

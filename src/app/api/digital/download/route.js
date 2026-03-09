@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { hasDigitalAccess } from "@/lib/digitalAccessStore";
 import { getDigitalProductById } from "@/lib/digitalProducts";
+import { t } from "@/lib/i18n";
 
 function getFileName(fileUrl, fallbackId) {
   try {
@@ -18,7 +19,7 @@ export async function GET(request) {
   const session = await auth();
   if (!session?.user?.email) {
     return NextResponse.json(
-      { ok: false, error: "Du behöver vara inloggad för att ladda ner filer." },
+      { ok: false, error: t("apiErrors.downloadLoginRequired") },
       { status: 401 },
     );
   }
@@ -26,16 +27,16 @@ export async function GET(request) {
   const { searchParams } = new URL(request.url);
   const productId = searchParams.get("productId") || "";
   if (!productId) {
-    return NextResponse.json({ ok: false, error: "Ogiltig produkt." }, { status: 400 });
+    return NextResponse.json({ ok: false, error: t("apiErrors.invalidProduct") }, { status: 400 });
   }
 
   const product = await getDigitalProductById(productId);
   if (!product || !product.active) {
-    return NextResponse.json({ ok: false, error: "Produkten hittades inte." }, { status: 404 });
+    return NextResponse.json({ ok: false, error: t("apiErrors.productNotFound") }, { status: 404 });
   }
   if (product.type !== "digital_file") {
     return NextResponse.json(
-      { ok: false, error: "Den här produkten laddas inte ner som fil. Se produktsidan i butiken." },
+      { ok: false, error: t("apiErrors.productNotDownloadable") },
       { status: 400 },
     );
   }
@@ -43,7 +44,7 @@ export async function GET(request) {
   const canDownload = await hasDigitalAccess(product.id, session.user.email);
   if (!canDownload) {
     return NextResponse.json(
-      { ok: false, error: "Du har inte åtkomst till den här filen ännu." },
+      { ok: false, error: t("apiErrors.noFileAccess") },
       { status: 403 },
     );
   }
@@ -52,7 +53,7 @@ export async function GET(request) {
     const upstream = await fetch(product.fileUrl, { cache: "no-store" });
     if (!upstream.ok || !upstream.body) {
       return NextResponse.json(
-        { ok: false, error: "Kunde inte hämta filen just nu." },
+        { ok: false, error: t("apiErrors.fileFetchFailed") },
         { status: 502 },
       );
     }
@@ -73,7 +74,7 @@ export async function GET(request) {
   } catch (error) {
     console.error("Digital download failed:", error);
     return NextResponse.json(
-      { ok: false, error: "Nedladdningen misslyckades. Försök igen snart." },
+      { ok: false, error: t("apiErrors.downloadFailed") },
       { status: 502 },
     );
   }

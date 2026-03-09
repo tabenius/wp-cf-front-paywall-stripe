@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createSessionCookie, createSessionToken } from "@/auth";
 import { validateUserPassword } from "@/lib/userStore";
+import { t } from "@/lib/i18n";
 
 export async function POST(request) {
   try {
@@ -10,7 +11,7 @@ export async function POST(request) {
     const user = await validateUserPassword(email, password);
     if (!user) {
       return NextResponse.json(
-        { ok: false, error: "Fel e-postadress eller lösenord." },
+        { ok: false, error: t("authErrors.wrongCredentials") },
         { status: 401 },
       );
     }
@@ -21,7 +22,7 @@ export async function POST(request) {
     return response;
   } catch {
     return NextResponse.json(
-      { ok: false, error: "Det gick inte att logga in just nu. Försök igen." },
+      { ok: false, error: t("authErrors.loginError") },
       { status: 400 },
     );
   }

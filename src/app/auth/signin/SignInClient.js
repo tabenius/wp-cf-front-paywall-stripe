@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
+import { t } from "@/lib/i18n";
 
 const OAUTH_ORDER = ["google", "apple", "microsoft-entra-id", "facebook"];
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -11,15 +12,15 @@ const MIN_PASSWORD_LENGTH = 8;
 function providerLabel(providerId) {
   switch (providerId) {
     case "google":
-      return "Fortsätt med Google";
+      return t("auth.continueWithGoogle");
     case "apple":
-      return "Fortsätt med Apple";
+      return t("auth.continueWithApple");
     case "microsoft-entra-id":
-      return "Fortsätt med Microsoft";
+      return t("auth.continueWithMicrosoft");
     case "facebook":
-      return "Fortsätt med Facebook";
+      return t("auth.continueWithFacebook");
     default:
-      return `Fortsätt med ${providerId}`;
+      return t("auth.continueWith", { provider: providerId });
   }
 }
 
@@ -57,11 +58,11 @@ export default function SignInClient() {
     event.preventDefault();
     const normalizedEmail = email.trim().toLowerCase();
     if (!EMAIL_REGEX.test(normalizedEmail)) {
-      setError("Ange en giltig e-postadress.");
+      setError(t("authErrors.invalidEmail"));
       return;
     }
     if (password.length < MIN_PASSWORD_LENGTH) {
-      setError(`Lösenord måste vara minst ${MIN_PASSWORD_LENGTH} tecken.`);
+      setError(t("authErrors.passwordTooShort", { min: MIN_PASSWORD_LENGTH }));
       return;
     }
 
@@ -75,7 +76,7 @@ export default function SignInClient() {
     const result = await response.json();
     setLoading(false);
     if (!response.ok || !result?.ok) {
-      setError(result?.error || "Fel e-postadress eller lösenord.");
+      setError(result?.error || t("authErrors.wrongCredentials"));
       return;
     }
     router.push(callbackUrl);
@@ -87,16 +88,16 @@ export default function SignInClient() {
 
   function getAuthErrorMessage() {
     if (authError === "provider_unavailable") {
-      return "Den valda inloggningstjänsten är inte tillgänglig just nu.";
+      return t("authErrors.providerUnavailable");
     }
     if (authError === "provider") {
-      return "Den valda inloggningstjänsten är inte tillgänglig just nu.";
+      return t("authErrors.providerUnavailable");
     }
     if (authError === "state") {
-      return "Inloggningsflödet avbröts. Försök igen.";
+      return t("authErrors.authFlowCancelled");
     }
     if (authError === "oauth") {
-      return "Det gick inte att logga in med extern tjänst just nu.";
+      return t("authErrors.oauthFailed");
     }
     return "";
   }
@@ -105,15 +106,15 @@ export default function SignInClient() {
 
   return (
     <section className="max-w-md mx-auto px-6 py-16">
-      <h1 className="text-3xl font-bold mb-2">Logga in</h1>
-      <p className="text-gray-600 mb-8">Använd e-post/lösenord eller en inloggningstjänst.</p>
+      <h1 className="text-3xl font-bold mb-2">{t("auth.signInTitle")}</h1>
+      <p className="text-gray-600 mb-8">{t("auth.signInSubtitle")}</p>
 
       <form className="space-y-4" onSubmit={onCredentialsSignIn}>
         <input
           type="email"
           value={email}
           onChange={(event) => setEmail(event.target.value)}
-          placeholder="E-post"
+          placeholder={t("common.email")}
           className="w-full border rounded px-3 py-2"
           autoComplete="email"
           required
@@ -122,7 +123,7 @@ export default function SignInClient() {
           type="password"
           value={password}
           onChange={(event) => setPassword(event.target.value)}
-          placeholder="Lösenord"
+          placeholder={t("auth.passwordPlaceholder")}
           className="w-full border rounded px-3 py-2"
           minLength={MIN_PASSWORD_LENGTH}
           autoComplete="current-password"
@@ -133,7 +134,7 @@ export default function SignInClient() {
           disabled={loading}
           className="w-full bg-gray-800 text-white rounded px-4 py-2 hover:bg-gray-700 disabled:opacity-50"
         >
-          {loading ? "Loggar in..." : "Logga in med e-post"}
+          {loading ? t("auth.signingIn") : t("auth.signInWithEmail")}
         </button>
       </form>
 
@@ -156,9 +157,9 @@ export default function SignInClient() {
       {combinedError ? <p className="mt-4 text-red-600">{combinedError}</p> : null}
 
       <p className="mt-8 text-sm text-gray-600">
-        Har du inget konto än?{" "}
+        {t("auth.noAccount")}{" "}
         <Link href="/auth/register" className="text-orange-700 hover:underline">
-          Skapa ett
+          {t("auth.createOne")}
         </Link>
       </p>
     </section>

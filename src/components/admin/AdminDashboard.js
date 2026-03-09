@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { t } from "@/lib/i18n";
 
 function toCurrencyUnits(cents) {
   return Number.isFinite(cents) ? (cents / 100).toFixed(2) : "0.00";
@@ -64,21 +65,21 @@ export default function AdminDashboard() {
       .then(async (res) => {
         const json = await res.json();
         if (!res.ok || !json?.ok)
-          throw new Error(json?.error || "Du behöver logga in som administratör.");
+          throw new Error(json?.error || t("admin.fetchAdminDataFailed"));
         setCourses(json.courses || {});
         setUsers(Array.isArray(json.users) ? json.users : []);
         setWpCourses(Array.isArray(json.wpCourses) ? json.wpCourses : []);
         setStorage(json.storage || null);
       })
       .catch((fetchError) => {
-        setError(fetchError.message || "Det gick inte att hämta admin-data.");
+        setError(fetchError.message || t("admin.fetchAdminDataFailed"));
       });
 
     fetch("/api/admin/products")
       .then(async (res) => {
         const json = await res.json();
         if (!res.ok || !json?.ok)
-          throw new Error(json?.error || "Kunde inte hämta produkter.");
+          throw new Error(json?.error || t("admin.fetchProductsFailed"));
         const rows = Array.isArray(json.products) ? json.products : [];
         setProducts(
           rows.map((product) => ({
@@ -89,7 +90,7 @@ export default function AdminDashboard() {
         );
       })
       .catch((fetchError) => {
-        setError(fetchError.message || "Det gick inte att hämta produktlistan.");
+        setError(fetchError.message || t("admin.fetchProductListFailed"));
       });
   }, []);
 
@@ -180,13 +181,13 @@ export default function AdminDashboard() {
       });
       const json = await response.json();
       if (!response.ok || !json?.ok) {
-        throw new Error(json?.error || "Det gick inte att spara produkter.");
+        throw new Error(json?.error || t("admin.saveProductsFailed"));
       }
       const rows = Array.isArray(json.products) ? json.products : [];
       setProducts(rows.map((product) => ({ ...emptyProduct(), ...product, slugEdited: true })));
-      setProductsMessage("Produktlistan sparades.");
+      setProductsMessage(t("admin.productsSaved"));
     } catch (saveError) {
-      setError(saveError.message || "Det gick inte att spara produkter.");
+      setError(saveError.message || t("admin.saveProductsFailed"));
     } finally {
       setProductsLoading(false);
     }
@@ -194,11 +195,11 @@ export default function AdminDashboard() {
 
   async function saveCourse() {
     if (!selectedCourse) {
-      setError("Ange en kurs-URI.");
+      setError(t("admin.enterCourseUri"));
       return;
     }
     if (price === "" || price === null || price === undefined) {
-      setError("Ange ett pris (kan vara 0).");
+      setError(t("admin.enterPrice"));
       return;
     }
     setError("");
@@ -217,11 +218,11 @@ export default function AdminDashboard() {
     const json = await response.json();
     setLoading(false);
     if (!response.ok || !json?.ok) {
-      setError(json?.error || "Det gick inte att spara.");
+      setError(json?.error || t("admin.saveFailed"));
       return;
     }
     setCourses(json.courses || {});
-    setMessage("Kursåtkomst uppdaterad.");
+    setMessage(t("admin.courseAccessUpdated"));
   }
 
   async function logoutAdmin() {
@@ -246,12 +247,12 @@ export default function AdminDashboard() {
         });
         const json = await res.json();
         if (!res.ok || !json?.ok) {
-          setError(json?.error || "Uppladdning misslyckades.");
+          setError(json?.error || t("admin.uploadFailed"));
           return;
         }
         updateProduct(index, field, json.url);
       } catch {
-        setError("Uppladdning misslyckades.");
+        setError(t("admin.uploadFailed"));
       }
     };
     input.click();
@@ -264,13 +265,13 @@ export default function AdminDashboard() {
       const response = await fetch("/api/admin/health");
       const json = await response.json();
       if (!response.ok || !json?.ok) {
-        throw new Error(json?.error || "Hälsokontrollen misslyckades.");
+        throw new Error(json?.error || t("admin.healthCheckFailed"));
       }
       setHealthChecks(json.checks || {});
       if (json.webhookUrl) setWebhookUrl(json.webhookUrl);
     } catch (healthError) {
       const msg =
-        healthError instanceof Error ? healthError.message : "Hälsokontrollen misslyckades.";
+        healthError instanceof Error ? healthError.message : t("admin.healthCheckFailed");
       setError(msg);
     } finally {
       setHealthLoading(false);
@@ -280,32 +281,32 @@ export default function AdminDashboard() {
   return (
     <section className="max-w-6xl mx-auto px-6 py-16 space-y-10">
       <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold">Admin</h1>
+        <h1 className="text-3xl font-bold">{t("admin.title")}</h1>
         <button
           type="button"
           onClick={logoutAdmin}
           className="px-4 py-2 rounded border hover:bg-gray-50"
         >
-          Logga ut
+          {t("admin.signOut")}
         </button>
       </div>
 
       {storage ? (
         <p className="text-sm text-gray-600">
-          Lagring: <strong>{storage.provider}</strong>
+          {t("admin.storage")}: <strong>{storage.provider}</strong>
         </p>
       ) : null}
 
       <div className="border rounded p-4 space-y-3">
         <div className="flex items-center justify-between">
-          <h2 className="text-xl font-semibold">Integrationskontroll</h2>
+          <h2 className="text-xl font-semibold">{t("admin.healthCheck")}</h2>
           <button
             type="button"
             onClick={runHealthCheck}
             className="px-4 py-2 rounded border hover:bg-gray-50 disabled:opacity-50"
             disabled={healthLoading}
           >
-            {healthLoading ? "Kör..." : "Kör kontroll"}
+            {healthLoading ? t("admin.running") : t("admin.runCheck")}
           </button>
         </div>
         {healthChecks ? (
@@ -318,31 +319,31 @@ export default function AdminDashboard() {
                   }`}
                 />
                 <span>
-                  <strong>{key}:</strong> {value?.message || "Inga detaljer"}
+                  <strong>{key}:</strong> {value?.message || t("common.noDetails")}
                 </span>
               </li>
             ))}
           </ul>
         ) : (
-          <p className="text-sm text-gray-600">Kör kontroll för att verifiera integrationer.</p>
+          <p className="text-sm text-gray-600">{t("admin.runCheckHint")}</p>
         )}
 
         {webhookUrl && (
           <div className="bg-gray-50 border rounded p-4 space-y-2 text-sm">
-            <h3 className="font-semibold">Stripe Webhook</h3>
+            <h3 className="font-semibold">{t("admin.stripeWebhook")}</h3>
             <p className="text-gray-600">
-              Konfigurera i{" "}
+              {t("admin.stripeWebhookConfigureIn")}{" "}
               <a
                 href="https://dashboard.stripe.com/webhooks"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-blue-700 underline"
               >
-                Stripe Dashboard → Developers → Webhooks
+                {t("admin.stripeWebhookDashboardLink")}
               </a>
             </p>
             <div className="flex items-center gap-2">
-              <label className="text-gray-500 shrink-0">Endpoint-URL:</label>
+              <label className="text-gray-500 shrink-0">{t("admin.endpointUrl")}:</label>
               <code className="bg-white border rounded px-2 py-1 text-xs break-all flex-1 select-all">
                 {webhookUrl}
               </code>
@@ -352,47 +353,47 @@ export default function AdminDashboard() {
                   navigator.clipboard.writeText(webhookUrl);
                 }}
                 className="px-2 py-1 rounded border hover:bg-gray-100 text-xs whitespace-nowrap"
-                title="Kopiera till urklipp"
+                title={t("common.copy")}
               >
-                Kopiera
+                {t("common.copy")}
               </button>
             </div>
             <p className="text-gray-500">
-              Event att lyssna på: <code className="bg-white border rounded px-1 text-xs">checkout.session.completed</code>
+              {t("admin.eventsToListen")}: <code className="bg-white border rounded px-1 text-xs">checkout.session.completed</code>
             </p>
           </div>
         )}
       </div>
 
       <div className="border rounded p-5 space-y-4">
-        <h2 className="text-2xl font-semibold">Shop-produkter</h2>
-        <p className="text-sm text-gray-600">Hantera filer och kursprodukter för /shop. Uppladdade filer sparas i WordPress mediebibliotek (max filstorlek beror på din WordPress-konfiguration, vanligtvis 2–64 MB).</p>
+        <h2 className="text-2xl font-semibold">{t("admin.shopProducts")}</h2>
+        <p className="text-sm text-gray-600">{t("admin.shopProductsHint")}</p>
 
         <div className="space-y-6">
           {products.map((product, index) => (
             <div key={index} className="border rounded p-4 space-y-3">
               <div className="flex justify-between items-center">
-                <h3 className="font-semibold">Produkt {index + 1}</h3>
+                <h3 className="font-semibold">{t("admin.product")} {index + 1}</h3>
                 <button
                   type="button"
                   onClick={() => removeProductRow(index)}
                   className="text-red-700 text-sm hover:underline"
                 >
-                  Ta bort
+                  {t("common.remove")}
                 </button>
               </div>
 
               <div className="grid md:grid-cols-2 gap-3">
                 <input
                   type="text"
-                  placeholder="Namn"
+                  placeholder={t("admin.namePlaceholder")}
                   value={product.name}
                   onChange={(event) => updateProduct(index, "name", event.target.value)}
                   className="border rounded px-3 py-2"
                 />
                 <input
                   type="text"
-                  placeholder="Slug"
+                  placeholder={t("admin.slugPlaceholder")}
                   value={product.slug}
                   onChange={(event) => updateProduct(index, "slug", event.target.value)}
                   className="border rounded px-3 py-2"
@@ -402,12 +403,12 @@ export default function AdminDashboard() {
                   onChange={(event) => updateProduct(index, "type", event.target.value)}
                   className="border rounded px-3 py-2"
                 >
-                  <option value="digital_file">Digital fil</option>
-                  <option value="course">Kursprodukt</option>
+                  <option value="digital_file">{t("admin.digitalFile")}</option>
+                  <option value="course">{t("admin.courseProduct")}</option>
                 </select>
                 <input
                   type="text"
-                  placeholder="Valuta (t.ex. sek)"
+                  placeholder={t("admin.currencyPlaceholder")}
                   value={product.currency}
                   onChange={(event) => updateProduct(index, "currency", event.target.value.toUpperCase())}
                   className="border rounded px-3 py-2"
@@ -416,7 +417,7 @@ export default function AdminDashboard() {
                   type="number"
                   min="0"
                   required
-                  placeholder="Pris i ören (obligatoriskt)"
+                  placeholder={t("admin.priceCentsPlaceholder")}
                   value={product.priceCents}
                   onChange={(event) =>
                     updateProduct(index, "priceCents", Number.parseInt(event.target.value || "0", 10) || 0)
@@ -429,13 +430,13 @@ export default function AdminDashboard() {
                     checked={product.active !== false}
                     onChange={(event) => updateProduct(index, "active", event.target.checked)}
                   />
-                  Aktiv produkt
+                  {t("admin.activeProduct")}
                 </label>
               </div>
 
               <textarea
                 rows="3"
-                placeholder="Beskrivning"
+                placeholder={t("admin.descriptionPlaceholder")}
                 value={product.description}
                 onChange={(event) => updateProduct(index, "description", event.target.value)}
                 className="w-full border rounded px-3 py-2"
@@ -444,7 +445,7 @@ export default function AdminDashboard() {
               <div className="flex gap-2">
                 <input
                   type="text"
-                  placeholder="Bild-URL (https://...)"
+                  placeholder={t("admin.imageUrlPlaceholder")}
                   value={product.imageUrl}
                   onChange={(event) => updateProduct(index, "imageUrl", event.target.value)}
                   className="flex-1 border rounded px-3 py-2"
@@ -453,9 +454,9 @@ export default function AdminDashboard() {
                   type="button"
                   onClick={() => uploadFile(index, "imageUrl")}
                   className="px-3 py-2 rounded border hover:bg-gray-50 text-sm whitespace-nowrap"
-                  title="Max filstorlek beror på WordPress-inställningar (vanligtvis 2–64 MB)"
+                  title={t("admin.uploadSizeHint")}
                 >
-                  Ladda upp bild
+                  {t("admin.uploadImage")}
                 </button>
               </div>
               {product.imageUrl && (
@@ -466,7 +467,7 @@ export default function AdminDashboard() {
                 <div className="flex gap-2">
                   <input
                     type="text"
-                    placeholder="Fil-URL (https://...)"
+                    placeholder={t("admin.fileUrlPlaceholder")}
                     value={product.fileUrl}
                     onChange={(event) => updateProduct(index, "fileUrl", event.target.value)}
                     className="flex-1 border rounded px-3 py-2"
@@ -475,15 +476,15 @@ export default function AdminDashboard() {
                     type="button"
                     onClick={() => uploadFile(index, "fileUrl")}
                     className="px-3 py-2 rounded border hover:bg-gray-50 text-sm whitespace-nowrap"
-                    title="Max filstorlek beror på WordPress-inställningar (vanligtvis 2–64 MB)"
+                    title={t("admin.uploadSizeHint")}
                   >
-                    Ladda upp fil
+                    {t("admin.uploadFile")}
                   </button>
                 </div>
               ) : (
                 <input
                   type="text"
-                  placeholder="Kurs-URI (/courses/min-kurs)"
+                  placeholder={t("admin.courseUriPlaceholder")}
                   value={product.courseUri}
                   onChange={(event) => updateProduct(index, "courseUri", event.target.value)}
                   className="w-full border rounded px-3 py-2"
@@ -499,7 +500,7 @@ export default function AdminDashboard() {
             onClick={addProductRow}
             className="px-4 py-2 rounded border hover:bg-gray-50"
           >
-            Lägg till produkt
+            {t("admin.addProduct")}
           </button>
           <button
             type="button"
@@ -507,24 +508,24 @@ export default function AdminDashboard() {
             className="px-4 py-2 rounded bg-gray-800 text-white hover:bg-gray-700 disabled:opacity-50"
             disabled={productsLoading}
           >
-            {productsLoading ? "Sparar..." : "Spara produkter"}
+            {productsLoading ? t("admin.saving") : t("admin.saveProducts")}
           </button>
         </div>
         {productsMessage ? <p className="text-green-700 text-sm">{productsMessage}</p> : null}
       </div>
 
       <div className="border rounded p-5 space-y-4">
-        <h2 className="text-2xl font-semibold">Kursåtkomst</h2>
+        <h2 className="text-2xl font-semibold">{t("admin.courseAccess")}</h2>
         <div className="grid md:grid-cols-2 gap-8">
           <div className="space-y-3">
-            <label className="text-sm text-gray-700">Välj kurs</label>
+            <label className="text-sm text-gray-700">{t("admin.selectCourse")}</label>
             {wpCourses.length > 0 ? (
               <select
                 className="w-full border rounded px-3 py-2"
                 value={selectedCourse}
                 onChange={(event) => setSelectedCourse(event.target.value)}
               >
-                <option value="">-- Välj en kurs --</option>
+                <option value="">{t("admin.selectCourseDefault")}</option>
                 {wpCourses.map((course) => (
                   <option key={course.uri} value={course.uri}>
                     {course.title}
@@ -546,7 +547,7 @@ export default function AdminDashboard() {
                   type="text"
                   value={selectedCourse}
                   onChange={(event) => setSelectedCourse(event.target.value)}
-                  placeholder="/courses/my-course"
+                  placeholder={t("admin.courseUriInputPlaceholder")}
                   className="w-full border rounded px-3 py-2"
                 />
                 {knownCourses.length > 0 ? (
@@ -555,7 +556,7 @@ export default function AdminDashboard() {
                     value={selectedCourse}
                     onChange={(event) => setSelectedCourse(event.target.value)}
                   >
-                    <option value="">Välj befintlig kurs</option>
+                    <option value="">{t("admin.selectExistingCourse")}</option>
                     {knownCourses.map((courseUri) => (
                       <option key={courseUri} value={courseUri}>
                         {courseUri}
@@ -566,7 +567,7 @@ export default function AdminDashboard() {
               </>
             )}
 
-            <label className="text-sm text-gray-700">Kursavgift (obligatoriskt, kan vara 0)</label>
+            <label className="text-sm text-gray-700">{t("admin.courseFee")}</label>
             <div className="flex gap-2">
               <input
                 type="number"
@@ -589,10 +590,10 @@ export default function AdminDashboard() {
           </div>
 
           <div className="space-y-3">
-            <label className="text-sm text-gray-700">Tillåtna användare</label>
+            <label className="text-sm text-gray-700">{t("admin.allowedUsers")}</label>
             <div className="border rounded p-3 max-h-72 overflow-auto space-y-2">
               {users.length === 0 && allowedUsers.length === 0 ? (
-                <p className="text-sm text-gray-500">Inga registrerade användare hittades.</p>
+                <p className="text-sm text-gray-500">{t("admin.noUsersFound")}</p>
               ) : (
                 <>
                   {users.map((user) => (
@@ -628,7 +629,7 @@ export default function AdminDashboard() {
                 value={manualEmail}
                 onChange={(event) => setManualEmail(event.target.value)}
                 onKeyDown={(event) => event.key === "Enter" && (event.preventDefault(), addManualEmail())}
-                placeholder="Lägg till e-post manuellt"
+                placeholder={t("admin.addEmailPlaceholder")}
                 className="w-full border rounded px-3 py-2 text-sm"
               />
               <button
@@ -636,7 +637,7 @@ export default function AdminDashboard() {
                 onClick={addManualEmail}
                 className="px-3 py-2 rounded border hover:bg-gray-50 text-sm whitespace-nowrap"
               >
-                Lägg till
+                {t("common.add")}
               </button>
             </div>
           </div>
@@ -648,7 +649,7 @@ export default function AdminDashboard() {
           className="px-6 py-2 rounded bg-gray-800 text-white hover:bg-gray-700 disabled:opacity-50"
           disabled={loading}
         >
-          {loading ? "Sparar..." : "Spara åtkomstinställningar"}
+          {loading ? t("admin.saving") : t("admin.saveCourseAccess")}
         </button>
       </div>
 

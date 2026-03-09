@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
 import { getAdminSessionFromCookieHeader } from "@/auth";
 import { listDigitalProducts, saveDigitalProducts } from "@/lib/digitalProducts";
+import { t } from "@/lib/i18n";
 
 function unauthorized() {
   return NextResponse.json(
-    { ok: false, error: "Du behöver logga in som administratör." },
+    { ok: false, error: t("apiErrors.adminLoginRequired") },
     { status: 401 },
   );
 }
@@ -29,7 +30,7 @@ export async function PUT(request) {
   } catch (error) {
     console.error("Admin product save failed:", error);
     return NextResponse.json(
-      { ok: false, error: "Det gick inte att spara produktlistan." },
+      { ok: false, error: t("apiErrors.saveProductsFailed") },
       { status: 400 },
     );
   }

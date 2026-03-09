@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+import { t } from "@/lib/i18n";
 
 export default function UserMenu({ isLoggedIn, signOutButton }) {
   const [open, setOpen] = useState(false);
@@ -24,7 +25,7 @@ export default function UserMenu({ isLoggedIn, signOutButton }) {
         type="button"
         onClick={() => setOpen(!open)}
         className="flex items-center justify-center w-8 h-8 rounded-full hover:bg-[#f0d0d0] transition-colors"
-        aria-label="Användarmeny"
+        aria-label={t("nav.userMenu")}
         aria-expanded={open}
       >
         {/* Head/person SVG icon */}
@@ -46,17 +47,17 @@ export default function UserMenu({ isLoggedIn, signOutButton }) {
       {open && (
         <div className="absolute right-0 top-full mt-1 bg-[#fff1f1] border border-[#f0d0d0] rounded shadow-lg py-1 min-w-[140px] z-50">
           <Link href="/admin" className={itemClass} onClick={() => setOpen(false)}>
-            Admin
+            {t("common.admin")}
           </Link>
           {isLoggedIn ? (
             <div onClick={() => setOpen(false)}>{signOutButton}</div>
           ) : (
             <>
               <Link href="/auth/signin" className={itemClass} onClick={() => setOpen(false)}>
-                Logga in
+                {t("common.signIn")}
               </Link>
               <Link href="/auth/register" className={itemClass} onClick={() => setOpen(false)}>
-                Registrera
+                {t("common.register")}
               </Link>
             </>
           )}

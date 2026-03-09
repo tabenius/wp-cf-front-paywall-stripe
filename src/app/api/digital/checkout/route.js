@@ -2,18 +2,19 @@ import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { getDigitalProductBySlug } from "@/lib/digitalProducts";
 import { createStripePaymentSession, isStripeEnabled } from "@/lib/stripe";
+import { t } from "@/lib/i18n";
 
 export async function POST(request) {
   const session = await auth();
   if (!session?.user?.email) {
     return NextResponse.json(
-      { ok: false, error: "Du behöver vara inloggad för att betala." },
+      { ok: false, error: t("apiErrors.loginRequired") },
       { status: 401 },
     );
   }
   if (!isStripeEnabled()) {
     return NextResponse.json(
-      { ok: false, error: "Onlinebetalning är tillfälligt otillgänglig." },
+      { ok: false, error: t("apiErrors.stripeUnavailable") },
       { status: 400 },
     );
   }
@@ -23,7 +24,7 @@ export async function POST(request) {
     const productSlug = typeof body?.productSlug === "string" ? body.productSlug.trim() : "";
     if (!productSlug) {
       return NextResponse.json(
-        { ok: false, error: "Produkten kunde inte förberedas för betalning." },
+        { ok: false, error: t("apiErrors.productNotReady") },
         { status: 400 },
       );
     }
@@ -31,7 +32,7 @@ export async function POST(request) {
     const product = await getDigitalProductBySlug(productSlug);
     if (!product || !product.active || product.priceCents <= 0) {
       return NextResponse.json(
-        { ok: false, error: "Produkten är inte tillgänglig för betalning just nu." },
+        { ok: false, error: t("apiErrors.productNotAvailable") },
         { status: 400 },
       );
     }
@@ -58,7 +59,7 @@ export async function POST(request) {
   } catch (error) {
     console.error("Digital checkout failed:", error);
     return NextResponse.json(
-      { ok: false, error: "Det gick inte att starta betalningen just nu. Försök igen snart." },
+      { ok: false, error: t("apiErrors.checkoutFailed") },
       { status: 400 },
     );
   }

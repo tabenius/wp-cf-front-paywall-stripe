@@ -3,18 +3,18 @@ import { getAdminSessionFromCookieHeader, isAdminCredentialsConfigured } from "@
 import { getEnabledProviders } from "@/lib/oauthProviders";
 import { getWordPressGraphqlAuth } from "@/lib/wordpressGraphqlAuth";
 import { isStripeEnabled } from "@/lib/stripe";
+import { t } from "@/lib/i18n";
 
 async function checkWordPressGraphQL() {
   const url = process.env.NEXT_PUBLIC_WORDPRESS_URL;
   const auth = getWordPressGraphqlAuth();
   if (!url) {
-    return { ok: false, message: "WordPress-anslutningen är inte inställd ännu." };
+    return { ok: false, message: t("health.wpNotConfigured") };
   }
   if (!auth.authorization) {
     return {
       ok: false,
-      message:
-        "WordPress-behorighet saknas. Ange WORDPRESS_GRAPHQL_AUTH_TOKEN eller WORDPRESS_GRAPHQL_USERNAME + WORDPRESS_GRAPHQL_APPLICATION_PASSWORD.",
+      message: t("health.wpAuthMissing"),
     };
   }
 
@@ -34,27 +34,21 @@ async function checkWordPressGraphQL() {
     });
     const json = await response.json();
     if (!response.ok) {
-      return { ok: false, message: "WordPress svarar inte korrekt just nu." };
+      return { ok: false, message: t("health.wpNotResponding") };
     }
     if (Array.isArray(json?.errors) && json.errors.length > 0) {
-      return {
-        ok: false,
-        message: "WordPress svarade med ett fel.",
-      };
+      return { ok: false, message: t("health.wpError") };
     }
-    return { ok: true, message: "WordPress-anslutningen fungerar." };
+    return { ok: true, message: t("health.wpOk") };
   } catch (error) {
     console.error("WordPress health check failed:", error);
-    return {
-      ok: false,
-      message: "Kunde inte ansluta till WordPress just nu.",
-    };
+    return { ok: false, message: t("health.wpConnectFailed") };
   }
 }
 
 async function checkStripe() {
   if (!isStripeEnabled()) {
-    return { ok: false, message: "Stripe är inte inställt ännu." };
+    return { ok: false, message: t("health.stripeNotConfigured") };
   }
 
   try {
@@ -63,15 +57,12 @@ async function checkStripe() {
       cache: "no-store",
     });
     if (!response.ok) {
-      return { ok: false, message: "Stripe svarar inte korrekt just nu." };
+      return { ok: false, message: t("health.stripeNotResponding") };
     }
-    return { ok: true, message: "Stripe-anslutningen fungerar." };
+    return { ok: true, message: t("health.stripeOk") };
   } catch (error) {
     console.error("Stripe health check failed:", error);
-    return {
-      ok: false,
-      message: "Kunde inte ansluta till Stripe just nu.",
-    };
+    return { ok: false, message: t("health.stripeConnectFailed") };
   }
 }
 
@@ -80,7 +71,7 @@ export async function GET(request) {
     request.headers.get("cookie") || "",
   );
   if (!adminSession) {
-    return NextResponse.json({ ok: false, error: "Du behöver logga in som administratör." }, { status: 401 });
+    return NextResponse.json({ ok: false, error: t("apiErrors.adminLoginRequired") }, { status: 401 });
   }
 
   const backend = process.env.COURSE_ACCESS_BACKEND || "local";
@@ -92,7 +83,7 @@ export async function GET(request) {
   const wordpressCheck =
     backend === "wordpress"
       ? await checkWordPressGraphQL()
-      : { ok: true, message: "WordPress-läge är inte aktiverat." };
+      : { ok: true, message: t("health.wpModeNotEnabled") };
   const stripeCheck = await checkStripe();
 
   // Build the webhook URL from the request
@@ -104,33 +95,33 @@ export async function GET(request) {
     ok: true,
     webhookUrl,
     checks: {
-      backend: { ok: true, message: `Backend: ${backend}` },
+      backend: { ok: true, message: t("health.backendLabel", { backend }) },
       adminCredentials: {
         ok: adminConfigured,
         message: adminConfigured
-          ? "Admininloggning är konfigurerad."
-          : "Admininloggning saknar uppgifter.",
+          ? t("health.adminConfigured")
+          : t("health.adminNotConfigured"),
       },
       authSecret: {
         ok: authSecretConfigured,
         message: authSecretConfigured
-          ? "Säkerhetsnyckeln är konfigurerad."
-          : "Säkerhetsnyckel saknas.",
+          ? t("health.authSecretConfigured")
+          : t("health.authSecretMissing"),
       },
       wordpressGraphQL: wordpressCheck,
       stripe: stripeCheck,
       stripeWebhook: {
         ok: stripeWebhookConfigured,
         message: stripeWebhookConfigured
-          ? "Stripe-webhook är konfigurerad."
-          : "Stripe-webhook saknas.",
+          ? t("health.webhookConfigured")
+          : t("health.webhookMissing"),
       },
       oauthProviders: {
         ok: providers.length > 0,
         message:
           providers.length > 0
-            ? `Aktiva inloggningstjänster: ${providers.join(", ")}`
-            : "Inga externa inloggningstjänster är konfigurerade.",
+            ? t("health.oauthActive", { providers: providers.join(", ") })
+            : t("health.oauthNone"),
       },
     },
   });

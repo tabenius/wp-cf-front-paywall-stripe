@@ -1,4 +1,5 @@
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import { t } from "@/lib/i18n";
 
 let _client = null;
 
@@ -24,7 +25,7 @@ function getS3Client() {
     process.env.S3_SECRET_ACCESS_KEY || process.env.CF_R2_SECRET_ACCESS_KEY || "";
 
   if (!accessKeyId || !secretAccessKey) {
-    throw new Error("S3-autentisering saknas (S3_ACCESS_KEY_ID / S3_SECRET_ACCESS_KEY).");
+    throw new Error(t("s3.authMissing"));
   }
 
   let endpoint;
@@ -32,12 +33,12 @@ function getS3Client() {
 
   if (backend === "r2") {
     const accountId = process.env.CF_ACCOUNT_ID;
-    if (!accountId) throw new Error("CF_ACCOUNT_ID saknas (krävs för R2).");
+    if (!accountId) throw new Error(t("s3.accountIdMissing"));
     endpoint = `https://${accountId}.r2.cloudflarestorage.com`;
     region = "auto";
   } else {
     endpoint = process.env.S3_ENDPOINT;
-    if (!endpoint) throw new Error("S3_ENDPOINT saknas.");
+    if (!endpoint) throw new Error(t("s3.endpointMissing"));
   }
 
   _client = new S3Client({
@@ -52,7 +53,7 @@ function getS3Client() {
 function getBucket() {
   const bucket =
     process.env.S3_BUCKET_NAME || process.env.CF_R2_BUCKET_NAME || "";
-  if (!bucket) throw new Error("S3_BUCKET_NAME saknas.");
+  if (!bucket) throw new Error(t("s3.bucketMissing"));
   return bucket;
 }
 
@@ -61,7 +62,7 @@ function getPublicUrl() {
     process.env.S3_PUBLIC_URL || process.env.CF_R2_PUBLIC_URL || ""
   ).replace(/\/+$/, "");
   if (!url) {
-    throw new Error("S3_PUBLIC_URL saknas. Ange den offentliga URL:en för din bucket.");
+    throw new Error(t("s3.publicUrlMissing"));
   }
   return url;
 }

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getAdminSessionFromCookieHeader } from "@/auth";
+import { t } from "@/lib/i18n";
 import {
   getCourseAccessState,
   getCourseStorageInfo,
@@ -23,7 +24,7 @@ async function fetchLearnPressCourses() {
 }
 
 function unauthorized() {
-  return NextResponse.json({ ok: false, error: "Du behöver logga in som administratör." }, { status: 401 });
+  return NextResponse.json({ ok: false, error: t("apiErrors.adminLoginRequired") }, { status: 401 });
 }
 
 export async function GET(request) {
@@ -67,7 +68,7 @@ export async function PUT(request) {
   } catch (error) {
     console.error("Admin course access update failed:", error);
     return NextResponse.json(
-      { ok: false, error: "Det gick inte att spara åtkomstinställningarna." },
+      { ok: false, error: t("apiErrors.saveCourseAccessFailed") },
       { status: 400 },
     );
   }

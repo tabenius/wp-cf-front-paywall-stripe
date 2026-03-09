@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createUser } from "@/lib/userStore";
+import { t } from "@/lib/i18n";
 
 function badRequest(message) {
   return NextResponse.json({ ok: false, error: message }, { status: 400 });
@@ -14,25 +15,25 @@ export async function POST(request) {
       typeof body?.password === "string" ? body.password : "";
 
     if (name.length < 2) {
-      return badRequest("Namnet måste vara minst 2 tecken.");
+      return badRequest(t("apiErrors.nameTooShort"));
     }
     if (!email.includes("@")) {
-      return badRequest("Ange en giltig e-postadress.");
+      return badRequest(t("apiErrors.invalidEmail"));
     }
     if (password.length < 8) {
-      return badRequest("Lösenordet måste vara minst 8 tecken.");
+      return badRequest(t("apiErrors.passwordTooShort"));
     }
 
     const user = await createUser({ name, email, password });
     return NextResponse.json({ ok: true, user }, { status: 201 });
   } catch (error) {
     const message =
-      error instanceof Error ? error.message : "Registreringen misslyckades.";
+      error instanceof Error ? error.message : "";
     const status = message === "Email already exists" ? 409 : 400;
     const localizedMessage =
       message === "Email already exists"
-        ? "E-postadressen används redan."
-        : "Registreringen misslyckades. Försök igen.";
+        ? t("authErrors.emailExists")
+        : t("authErrors.registerError");
     return NextResponse.json({ ok: false, error: localizedMessage }, { status });
   }
 }

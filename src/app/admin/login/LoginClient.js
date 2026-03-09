@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { t } from "@/lib/i18n";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -16,11 +17,11 @@ export default function AdminLoginClient() {
     event.preventDefault();
     const normalizedEmail = email.trim().toLowerCase();
     if (!EMAIL_REGEX.test(normalizedEmail)) {
-      setError("Ange en giltig e-postadress.");
+      setError(t("authErrors.invalidEmail"));
       return;
     }
     if (!password.trim()) {
-      setError("Lösenord måste anges.");
+      setError(t("authErrors.passwordRequired"));
       return;
     }
 
@@ -34,7 +35,7 @@ export default function AdminLoginClient() {
     const json = await response.json();
     setLoading(false);
     if (!response.ok || !json?.ok) {
-      setError(json?.error || "Inloggningen misslyckades.");
+      setError(json?.error || t("authErrors.loginFailed"));
       return;
     }
     router.push("/admin");
@@ -43,14 +44,14 @@ export default function AdminLoginClient() {
 
   return (
     <section className="max-w-md mx-auto px-6 py-16">
-      <h1 className="text-3xl font-bold mb-2">Admininloggning</h1>
-      <p className="text-gray-600 mb-8">Hantera kursåtkomst och prisinställningar.</p>
+      <h1 className="text-3xl font-bold mb-2">{t("adminLogin.title")}</h1>
+      <p className="text-gray-600 mb-8">{t("adminLogin.subtitle")}</p>
       <form onSubmit={onSubmit} className="space-y-4">
         <input
           type="email"
           value={email}
           onChange={(event) => setEmail(event.target.value)}
-          placeholder="Admin e-post"
+          placeholder={t("adminLogin.emailPlaceholder")}
           className="w-full border rounded px-3 py-2"
           autoComplete="email"
           required
@@ -59,7 +60,7 @@ export default function AdminLoginClient() {
           type="password"
           value={password}
           onChange={(event) => setPassword(event.target.value)}
-          placeholder="Admin-lösenord"
+          placeholder={t("adminLogin.passwordPlaceholder")}
           className="w-full border rounded px-3 py-2"
           autoComplete="current-password"
           required
@@ -69,7 +70,7 @@ export default function AdminLoginClient() {
           className="w-full bg-gray-800 text-white rounded px-4 py-2 hover:bg-gray-700 disabled:opacity-50"
           disabled={loading}
         >
-          {loading ? "Loggar in..." : "Logga in"}
+          {loading ? t("auth.signingIn") : t("common.signIn")}
         </button>
       </form>
       {error ? <p className="mt-4 text-red-600">{error}</p> : null}

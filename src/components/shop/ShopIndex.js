@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { t } from "@/lib/i18n";
 
 function formatPrice(priceCents, currency) {
   return `${(priceCents / 100).toFixed(2)} ${String(currency || "SEK").toUpperCase()}`;
@@ -24,7 +25,7 @@ export default function ShopIndex({
       return;
     }
     if (!stripeEnabled) {
-      setError("Betalning är inte tillgänglig ännu. Kontakta administratören.");
+      setError(t("shop.paymentNotAvailable"));
       return;
     }
 
@@ -39,7 +40,7 @@ export default function ShopIndex({
     setLoadingProductId("");
 
     if (!response.ok || !json?.ok || !json?.url) {
-      setError(json?.error || "Det gick inte att starta betalningen.");
+      setError(json?.error || t("shop.checkoutFailed"));
       return;
     }
 
@@ -49,15 +50,15 @@ export default function ShopIndex({
   return (
     <section className="max-w-6xl mx-auto px-6 py-16 space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">Shop</h1>
-        <p className="text-gray-600 mt-2">Köp digitala produkter och kurser.</p>
+        <h1 className="text-3xl font-bold">{t("shop.title")}</h1>
+        <p className="text-gray-600 mt-2">{t("shop.subtitle")}</p>
       </div>
 
       {checkoutStatus === "success" ? (
-        <p className="text-green-700">Betalningen registrerades. Produkten är nu upplåst.</p>
+        <p className="text-green-700">{t("shop.paymentSuccess")}</p>
       ) : null}
       {checkoutStatus === "cancel" ? (
-        <p className="text-yellow-700">Betalningen avbröts. Ingen debitering gjordes.</p>
+        <p className="text-yellow-700">{t("shop.paymentCancelled")}</p>
       ) : null}
       {error ? <p className="text-red-600">{error}</p> : null}
 
@@ -83,10 +84,10 @@ export default function ShopIndex({
                   <p className="text-gray-700 line-clamp-3">{product.description}</p>
                 ) : null}
                 <p className="text-sm text-gray-500">
-                  Typ: {product.type === "course" ? "Kurs" : "Digital fil"}
+                  {t("shop.typeLabel")}: {product.type === "course" ? t("shop.typeCourse") : t("shop.typeDigitalFile")}
                 </p>
                 <p className="text-gray-800 font-semibold">
-                  Pris: {formatPrice(product.priceCents, product.currency)}
+                  {t("common.price")}: {formatPrice(product.priceCents, product.currency)}
                 </p>
 
                 <div className="flex gap-2 items-center">
@@ -94,10 +95,10 @@ export default function ShopIndex({
                     href={`/shop/${encodeURIComponent(product.slug)}`}
                     className="px-3 py-2 rounded border hover:bg-gray-50"
                   >
-                    Visa
+                    {t("common.view")}
                   </Link>
                   {owned ? (
-                    <span className="text-green-700 text-sm font-semibold">Köpt</span>
+                    <span className="text-green-700 text-sm font-semibold">{t("shop.purchased")}</span>
                   ) : (
                     <button
                       type="button"
@@ -105,7 +106,7 @@ export default function ShopIndex({
                       onClick={() => startCheckout(product.slug)}
                       className="px-4 py-2 rounded bg-gray-800 text-white hover:bg-gray-700 disabled:opacity-50"
                     >
-                      {loading ? "Skickar..." : "Köp"}
+                      {loading ? t("shop.sending") : t("common.buy")}
                     </button>
                   )}
                 </div>

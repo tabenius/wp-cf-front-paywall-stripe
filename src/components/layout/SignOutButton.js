@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { t } from "@/lib/i18n";
 
 export default function SignOutButton({ className = "" }) {
   const router = useRouter();
@@ -13,7 +14,7 @@ export default function SignOutButton({ className = "" }) {
 
   return (
     <button type="button" onClick={onClick} className={className}>
-      Logga ut
+      {t("common.signOut")}
     </button>
   );
 }

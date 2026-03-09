@@ -2,19 +2,20 @@ import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { getCourseAccessConfig } from "@/lib/courseAccess";
 import { createStripeCheckoutSession, isStripeEnabled } from "@/lib/stripe";
+import { t } from "@/lib/i18n";
 
 export async function POST(request) {
   const session = await auth();
   if (!session?.user?.email) {
     return NextResponse.json(
-      { ok: false, error: "Du behöver vara inloggad för att betala." },
+      { ok: false, error: t("apiErrors.loginRequired") },
       { status: 401 },
     );
   }
   if (!isStripeEnabled()) {
     console.error("Stripe checkout unavailable: STRIPE_SECRET_KEY is not configured");
     return NextResponse.json(
-      { ok: false, error: "Onlinebetalning är tillfälligt otillgänglig." },
+      { ok: false, error: t("apiErrors.stripeUnavailable") },
       { status: 400 },
     );
   }
@@ -37,7 +38,7 @@ export async function POST(request) {
     if (!courseUri) {
       console.error("Stripe checkout request rejected: missing content URI");
       return NextResponse.json(
-        { ok: false, error: "Innehållet kunde inte förberedas för betalning." },
+        { ok: false, error: t("apiErrors.contentNotReady") },
         { status: 400 },
       );
     }
@@ -53,8 +54,8 @@ export async function POST(request) {
           ok: false,
           error:
             contentKind === "event"
-              ? "Händelsen är inte tillgänglig för betalning just nu."
-              : "Kursen är inte tillgänglig för betalning just nu.",
+              ? t("apiErrors.eventNotAvailable")
+              : t("apiErrors.courseNotAvailable"),
         },
         { status: 400 },
       );
@@ -76,7 +77,7 @@ export async function POST(request) {
   } catch (error) {
     console.error("Stripe checkout failed:", error);
     return NextResponse.json(
-      { ok: false, error: "Det gick inte att starta betalningen just nu. Försök igen snart." },
+      { ok: false, error: t("apiErrors.checkoutFailed") },
       { status: 400 },
     );
   }

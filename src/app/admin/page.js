@@ -1,10 +1,11 @@
 import { redirect } from "next/navigation";
 import { adminAuth } from "@/auth";
 import AdminDashboard from "@/components/admin/AdminDashboard";
+import { t } from "@/lib/i18n";
 
-export const metadata = {
-  title: "Admin för kursåtkomst",
-};
+export async function generateMetadata() {
+  return { title: t("metadata.adminPage") };
+}
 
 export default async function AdminPage() {
   const session = await adminAuth();

@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { t } from "@/lib/i18n";
 
 function formatPrice(priceCents, currency) {
   return `${(priceCents / 100).toFixed(2)} ${String(currency || "SEK").toUpperCase()}`;
@@ -18,7 +19,7 @@ export default function ShopProductDetail({ user, product, owned, stripeEnabled,
       return;
     }
     if (!stripeEnabled) {
-      setError("Betalning är inte tillgänglig ännu. Kontakta administratören.");
+      setError(t("shop.paymentNotAvailable"));
       return;
     }
 
@@ -33,7 +34,7 @@ export default function ShopProductDetail({ user, product, owned, stripeEnabled,
     setLoading(false);
 
     if (!response.ok || !json?.ok || !json?.url) {
-      setError(json?.error || "Det gick inte att starta betalningen.");
+      setError(json?.error || t("shop.checkoutFailed"));
       return;
     }
 
@@ -44,7 +45,7 @@ export default function ShopProductDetail({ user, product, owned, stripeEnabled,
     <section className="max-w-4xl mx-auto px-6 py-16 space-y-6">
       <p>
         <Link href="/shop" className="text-sm text-teal-800 hover:underline">
-          Tillbaka till shop
+          {t("shop.backToShop")}
         </Link>
       </p>
 
@@ -61,13 +62,13 @@ export default function ShopProductDetail({ user, product, owned, stripeEnabled,
 
       <h1 className="text-3xl font-bold">{product.name}</h1>
       <p className="text-gray-600">{product.description}</p>
-      <p className="text-gray-700 font-semibold">Pris: {formatPrice(product.priceCents, product.currency)}</p>
+      <p className="text-gray-700 font-semibold">{t("common.price")}: {formatPrice(product.priceCents, product.currency)}</p>
 
       {checkoutStatus === "success" ? (
-        <p className="text-green-700">Betalningen registrerades. Produkten är nu upplåst.</p>
+        <p className="text-green-700">{t("shop.paymentSuccess")}</p>
       ) : null}
       {checkoutStatus === "cancel" ? (
-        <p className="text-yellow-700">Betalningen avbröts.</p>
+        <p className="text-yellow-700">{t("shop.paymentCancelledShort")}</p>
       ) : null}
       {error ? <p className="text-red-600">{error}</p> : null}
 
@@ -77,21 +78,21 @@ export default function ShopProductDetail({ user, product, owned, stripeEnabled,
             href={`/api/digital/download?productId=${encodeURIComponent(product.id)}`}
             className="inline-block px-5 py-3 rounded bg-teal-700 text-white hover:bg-teal-600"
           >
-            Ladda ner fil
+            {t("shop.downloadFile")}
           </a>
         ) : (
           <div className="rounded border border-teal-200 bg-teal-50 p-5 space-y-3">
-            <h2 className="text-xl font-semibold text-teal-900">Så får du åtkomst till kursen</h2>
+            <h2 className="text-xl font-semibold text-teal-900">{t("shop.courseAccessTitle")}</h2>
             <p className="text-teal-900">
-              Du har köpt kursprodukten. Logga in med samma e-postadress som du använde vid betalning.
+              {t("shop.courseAccessDesc")}
             </p>
             <p className="text-teal-900">
-              Gå sedan till kursens sida och öppna innehållet. Om åtkomst saknas, vänta någon minut och ladda om sidan.
+              {t("shop.courseAccessHint")}
             </p>
             {product.courseUri ? (
               <p>
                 <Link href={product.courseUri} className="text-teal-900 underline font-semibold">
-                  Öppna kurs: {product.courseUri}
+                  {t("shop.openCourse")}: {product.courseUri}
                 </Link>
               </p>
             ) : null}
@@ -104,7 +105,7 @@ export default function ShopProductDetail({ user, product, owned, stripeEnabled,
           disabled={loading}
           className="px-5 py-3 rounded bg-gray-800 text-white hover:bg-gray-700 disabled:opacity-50"
         >
-          {loading ? "Skickar till Stripe..." : "Köp produkt"}
+          {loading ? t("shop.sendingToStripe") : t("shop.buyProduct")}
         </button>
       )}
     </section>

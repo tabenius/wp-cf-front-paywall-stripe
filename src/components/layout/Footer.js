@@ -1,12 +1,13 @@
 import React from "react";
 import Link from "next/link";
 import site from "@/lib/site";
+import { t } from "@/lib/i18n";
 
 const Footer = () => {
   const menuItemClass = "my-1";
   const menuItemLinkClass = "hover:underline";
   return (
-    <footer className="bg-[#fff1f1] text-[#1a1a1a] py-8">
+    <footer className="bg-[#fff1f1] text-[#1a1a1a] py-8 border-t border-[#333333]">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
           {site.footerColumns.map((col) => (
@@ -24,7 +25,7 @@ const Footer = () => {
             </div>
           ))}
           <div>
-            <h3 className="text-lg font-semibold mb-4">Kontakt</h3>
+            <h3 className="text-lg font-semibold mb-4">{t("footer.contact")}</h3>
             <ul>
               <li className={menuItemClass}>
                 <a href={`mailto:${site.contact.email}`} className={menuItemLinkClass}>
@@ -48,7 +49,7 @@ const Footer = () => {
         </div>
         <div className="mt-8 text-center">
           <p>
-            &copy; {new Date().getFullYear()} {site.copyright}. Alla rättigheter förbehållna.
+            &copy; {new Date().getFullYear()} {site.copyright}. {t("footer.allRightsReserved")}
           </p>
         </div>
       </div>
