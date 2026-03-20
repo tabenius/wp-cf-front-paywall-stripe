@@ -9,7 +9,6 @@ import {
   toCategorySlugs,
 } from "@/lib/contentCategories";
 import ImageUploader from "./ImageUploader";
-import ImageGenerationPanel from "./ImageGenerationPanel";
 import UserAccessPanel from "./UserAccessPanel";
 
 function toCurrencyUnits(cents) {
@@ -401,8 +400,6 @@ function AccessTab({
   uploadBackend,
   uploadInfo,
   runtime,
-  showImageGen,
-  setShowImageGen,
   setWpEvents,
   setWcProducts,
   setWpCourses,
@@ -1188,27 +1185,6 @@ function AccessTab({
                     }
                     className="w-full border rounded px-3 py-2 text-sm"
                   />
-                  <button
-                    type="button"
-                    onClick={() => setShowImageGen((v) => !v)}
-                    className="mt-1 text-xs px-2.5 py-1 rounded border border-purple-300 text-purple-700 hover:bg-purple-50"
-                  >
-                    {t("admin.generateImages")}
-                  </button>
-                  {showImageGen && (
-                    <div className="mt-2">
-                      <ImageGenerationPanel
-                        description={
-                          selectedShopProduct.description ||
-                          selectedShopProduct.name ||
-                          ""
-                        }
-                        onSave={(url) => updateProduct(shopIndex, "imageUrl", url)}
-                        context="editor"
-                        uploadBackend={uploadBackend}
-                      />
-                    </div>
-                  )}
                 </div>
 
                 <div className="space-y-1.5">
@@ -1560,8 +1536,6 @@ export default function AdminProductsTab(props) {
     uploadBackend,
     uploadInfo,
     runtime,
-    showImageGen,
-    setShowImageGen,
     setWpEvents,
     setWcProducts,
     setWpCourses,
@@ -1638,8 +1612,6 @@ export default function AdminProductsTab(props) {
             uploadBackend={uploadBackend}
             uploadInfo={uploadInfo}
             runtime={runtime}
-            showImageGen={showImageGen}
-            setShowImageGen={setShowImageGen}
             setWpEvents={setWpEvents}
             setWcProducts={setWcProducts}
             setWpCourses={setWpCourses}

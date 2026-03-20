@@ -28,8 +28,8 @@ The following paths were removed from repository history:
 - `.claude/skills/cf-tail/SKILL.md`
 - `.claude/skills/i18n-sync/SKILL.md`
 
-## Recommended Next Pruning Pass (Optional)
-If you want a stricter "bare essentials" OSS profile, prune these areas in a follow-up branch:
+## Strict Bare-Essentials Pass (Applied)
+The following AI/chat paths were removed in the strict OSS pass:
 - `src/app/api/chat/`
 - `src/app/api/admin/generate-image/`
 - `src/lib/ai.js`
@@ -39,8 +39,9 @@ If you want a stricter "bare essentials" OSS profile, prune these areas in a fol
 - `src/components/admin/ChatMarkdown.js`
 - `src/components/admin/ImageGenerationPanel.js`
 - `src/lib/adminImageGenerationState.js`
+- related feature tests under `tests/` for these modules
 
-Then adjust admin navigation/tab wiring and i18n accordingly.
+Admin navigation was rewired to remove the Chat tab and all dependent tab wiring.
 
 ## History-Safe Extraction Process
 Use this process when creating future public cuts from a private source repo:

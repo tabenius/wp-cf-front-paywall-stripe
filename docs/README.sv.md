@@ -125,11 +125,11 @@ sequenceDiagram
 3. **Storage**: kontrollera uppladdningsbackend och autentisering.
 4. **Products**: sätt pris/moms/åtkomst/synlighet för alla källor.
 5. **Sales**: verifiera betalningar och kvitton.
-6. **Support + Chat**: felsök med dead-link-scan och AI-assistent.
+6. **Support**: felsök med dead-link-scan och ärendehantering.
 
 ![Admin welcome och kontrollrum](/docs/admin/welcome-control-room.svg)
 ![Produkter och lagringspaneler](/docs/admin/products-storage.svg)
-![Support, betalningar och chatt](/docs/admin/support-chat.svg)
+![Support och betalningar](/docs/admin/support-chat.svg)
 
 ## WordPress GraphQL-autentisering
 

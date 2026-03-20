@@ -162,7 +162,7 @@ For most stores, this order gives the fastest route to “ready to sell”:
 3. **Storage**: confirm R2/S3/WordPress upload destination and credentials.
 4. **Products**: review all product sources, set prices, VAT, and visibility.
 5. **Sales**: confirm payments/receipts are arriving.
-6. **Support + Chat**: debug issues, scan dead links, and use AI assistance.
+6. **Support**: debug issues and scan dead links.
 
 ![Admin welcome and control room overview](/docs/admin/welcome-control-room.svg)
 
@@ -176,13 +176,12 @@ For most stores, this order gives the fastest route to “ready to sell”:
 | **Storage**   | Upload backend setup (WordPress / R2 / S3), client guidance, and object visibility.                                     |
 | **Products**  | Unified product list (WooCommerce, LearnPress, events, digital), pricing, VAT, access, images/files.                   |
 | **Support**   | Tickets, payment troubleshooting, and dead-link finder with internal/pseudo-external/external classification.           |
-| **Chat**      | AI assistant for payments, access, docs, debug context, and operations Q&A (EN/SV/ES).                                 |
 | **Health**    | Environment and integration checks.                                                                                       |
 | **Style**     | Visual style reference for UI consistency.                                                                                |
 | **Info**      | Build/runtime/environment diagnostics and operational metadata.                                                           |
 
 ![Products and storage workflow](/docs/admin/products-storage.svg)
-![Support, payments and chat workflow](/docs/admin/support-chat.svg)
+![Support and payments workflow](/docs/admin/support-chat.svg)
 
 Tip: press `Ctrl+Alt+M` to open the menu drawer anywhere in admin.
 

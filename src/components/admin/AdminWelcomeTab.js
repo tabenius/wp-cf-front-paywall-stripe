@@ -780,15 +780,6 @@ function WelcomeCards({ showRevisionBadge }) {
       tone: "from-violet-500/20 via-violet-200/10 to-indigo-200/10",
     },
     {
-      tab: "chat",
-      title: t("admin.cardChat", "AI Assist"),
-      body: t(
-        "admin.cardChatBody",
-        "Ask about payments, access, docs, and logs with multilingual intelligence.",
-      ),
-      tone: "from-emerald-500/20 via-emerald-200/10 to-cyan-200/10",
-    },
-    {
       tab: "info/health",
       title: t("admin.healthStatus", "Health"),
       body: t(

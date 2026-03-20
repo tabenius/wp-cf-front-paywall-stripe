@@ -4,7 +4,6 @@ export const ADMIN_TAB_HOTKEYS = [
   { tab: "stats", combo: "Ctrl+Alt+2", match: { code: "Digit2", key: "2" } },
   { tab: "storage", combo: "Ctrl+Alt+3", match: { code: "Digit3", key: "3" } },
   { tab: "products", combo: "Ctrl+Alt+4", match: { code: "Digit4", key: "4" } },
-  { tab: "chat", combo: "Ctrl+Alt+5", match: { code: "Digit5", key: "5" } },
   { tab: "health", combo: "Ctrl+Alt+6", match: { code: "Digit6", key: "6" } },
   { tab: "style", combo: "Ctrl+Alt+7", match: { code: "Digit7", key: "7" } },
   { tab: "info", combo: "Ctrl+Alt+8", match: { code: "Digit8", key: "8" } },

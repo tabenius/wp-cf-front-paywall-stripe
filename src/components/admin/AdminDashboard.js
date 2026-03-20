@@ -16,8 +16,6 @@ import { multipartUpload } from "@/lib/multipartUploadClient";
 import ImageUploader from "./ImageUploader";
 import ProductRow from "./ProductRow";
 import ProductSection from "./ProductSection";
-import ImageGenerationPanel from "./ImageGenerationPanel";
-import ChatPanel from "./ChatPanel";
 import { adminFetch } from "@/lib/adminFetch";
 import {
   isAdminActionHotkey,
@@ -48,7 +46,6 @@ const ADMIN_TABS = [
   "media",
   "storage",
   "products",
-  "chat",
   "style",
   "info",
   "support",
@@ -696,10 +693,6 @@ export default function AdminDashboard() {
     priority: "moderate",
   });
   const [commentText, setCommentText] = useState("");
-  const [showImageGen, setShowImageGen] = useState(false);
-  const [chatMessages, setChatMessages] = useState([]);
-  const [chatInput, setChatInput] = useState("");
-  const [chatLoading, setChatLoading] = useState(false);
   const [loaded, setLoaded] = useState({
     courseAccess: false,
     products: false,
@@ -1292,106 +1285,6 @@ export default function AdminDashboard() {
     () => tickets.find((t) => t.id === selectedTicketId) || tickets[0],
     [tickets, selectedTicketId],
   );
-
-  async function rebuildIndex() {
-    setChatLoading(true);
-    setChatMessages((prev) => [
-      ...prev,
-      { role: "user", content: "rebuild index" },
-    ]);
-    try {
-      const res = await fetch("/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: "rebuild index", rebuild: true }),
-      });
-      const json = await res.json();
-      if (!res.ok || !json?.ok)
-        throw new Error(json?.error || "Rebuild failed");
-      setChatMessages((prev) => [
-        ...prev,
-        {
-          role: "assistant",
-          content: json.answer || "Index rebuilt.",
-          sources: json.sources || [],
-        },
-      ]);
-    } catch (err) {
-      setChatMessages((prev) => [
-        ...prev,
-        {
-          role: "assistant",
-          content: err.message || "Rebuild failed",
-          sources: [],
-        },
-      ]);
-    } finally {
-      setChatLoading(false);
-    }
-  }
-
-  async function sendChat() {
-    if (!chatInput.trim()) return;
-    const message = chatInput.trim();
-    const isRebuild =
-      /^rebuild\s+index$/i.test(message) ||
-      /^(indexera|bygg\s+om\s+index|återbygg\s+index)$/i.test(message) ||
-      /^(reindexar|reconstruir\s+[ií]ndice|regenerar\s+[ií]ndice)$/i.test(
-        message,
-      );
-    setChatInput("");
-    if (isRebuild) {
-      await rebuildIndex();
-      return;
-    }
-    const history = [...chatMessages, { role: "user", content: message }];
-    setChatMessages(history);
-    setChatLoading(true);
-    try {
-      const res = await fetch("/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message }),
-      });
-      const json = await res.json();
-      if (!res.ok || !json?.ok) throw new Error(json?.error || "Chat failed");
-      if (json.type === "image-generation") {
-        setChatMessages((prev) => [
-          ...prev,
-          { role: "assistant", type: "image-generation", prompt: json.prompt },
-        ]);
-      } else {
-        setChatMessages((prev) => [
-          ...prev,
-          {
-            role: "assistant",
-            content: json.answer,
-            sources: json.sources || [],
-          },
-        ]);
-      }
-    } catch (err) {
-      setChatMessages((prev) => [
-        ...prev,
-        {
-          role: "assistant",
-          content: err.message || "Chat failed",
-          sources: [],
-        },
-      ]);
-    } finally {
-      setChatLoading(false);
-    }
-  }
-
-  async function clearChat() {
-    setChatMessages([]);
-    try {
-      await fetch("/api/chat", { method: "DELETE" });
-    } catch (err) {
-      console.error("clearChat error", err);
-    }
-  }
 
   async function downloadReceipt(chargeId) {
     setDownloading(chargeId);
@@ -2037,8 +1930,6 @@ export default function AdminDashboard() {
             uploadBackend={uploadBackend}
             uploadInfo={uploadInfo}
             runtime={runtime}
-            showImageGen={showImageGen}
-            setShowImageGen={setShowImageGen}
             setWpEvents={setWpEvents}
             setWcProducts={setWcProducts}
             setWpCourses={setWpCourses}
@@ -2514,109 +2405,6 @@ export default function AdminDashboard() {
             debugLogs={debugLogs}
           />
         </Suspense>
-      )}
-
-      {/* ── Chat tab ── */}
-      {activeTab === "chat" && (
-        <div className="grid min-w-0 grid-cols-1 gap-4 xl:grid-cols-2 xl:gap-6 items-start">
-          <ChatPanel
-            chatMessages={chatMessages}
-            chatInput={chatInput}
-            setChatInput={setChatInput}
-            sendChat={sendChat}
-            rebuildIndex={rebuildIndex}
-            clearChat={clearChat}
-            chatLoading={chatLoading}
-            uploadBackend={uploadBackend}
-          />
-          <div className="min-w-0 border rounded p-4 space-y-4 text-sm text-gray-300 bg-[#0e0018]">
-            <h3 className="font-semibold text-white">Example commands</h3>
-            {[
-              {
-                group: "Sales & revenue",
-                examples: [
-                  "sales today",
-                  "sales this week",
-                  "sales this month",
-                  "försäljning denna månad",
-                  "ventas hoy",
-                  "sales for user@example.com",
-                  "revenue total",
-                  "total intäkt",
-                ],
-              },
-              {
-                group: "Payments & receipts",
-                examples: [
-                  "payments for user@example.com",
-                  "best sellers",
-                  "bästsäljare",
-                  "más vendidos",
-                ],
-              },
-              {
-                group: "Refunds",
-                examples: [
-                  "refund pi_3abc123",
-                  "återbetala pi_3abc123",
-                  "reembolsar pi_3abc123",
-                ],
-              },
-              {
-                group: "Access control",
-                examples: [
-                  "who bought /course-name",
-                  "vem köpte /kursnamn",
-                  "quién compró /curso",
-                  "grant access user@example.com /course-name",
-                  "ge åtkomst user@example.com /kursnamn",
-                  "conceder acceso user@example.com /curso",
-                  "revoke access user@example.com /course-name",
-                  "ta bort åtkomst user@example.com /kursnamn",
-                  "revocar acceso user@example.com /curso",
-                ],
-              },
-              {
-                group: "Content",
-                examples: [
-                  "list all pages",
-                  "visa alla sidor",
-                  "list all posts",
-                  "visa alla inlägg",
-                  "list all events",
-                  "visa alla evenemang",
-                  "list all courses",
-                  "visa alla kurser",
-                  "list all products",
-                  "visa alla produkter",
-                ],
-              },
-              {
-                group: "Index",
-                examples: ["rebuild index", "bygg om index", "reindexar"],
-              },
-            ].map(({ group, examples }) => (
-              <div key={group}>
-                <p className="text-purple-300 font-medium mb-1">{group}</p>
-                <ul className="space-y-1">
-                  {examples.map((ex) => (
-                    <li key={ex}>
-                      <button
-                        type="button"
-                        className="text-left text-gray-400 hover:text-white font-mono text-xs"
-                        onClick={() => {
-                          setChatInput(ex);
-                        }}
-                      >
-                        {ex}
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-        </div>
       )}
 
       {uploadProgress && (

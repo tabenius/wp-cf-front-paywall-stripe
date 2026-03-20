@@ -132,11 +132,11 @@ sequenceDiagram
 3. **Storage**: confirm upload backend and credentials.
 4. **Products**: set prices/VAT/access/visibility across all sources.
 5. **Sales**: verify charges and receipt availability.
-6. **Support + Chat**: diagnose issues with dead-link scan + AI assistant.
+6. **Support**: diagnose issues with dead-link scan and ticket workflow.
 
 ![Admin welcome and control room](/docs/admin/welcome-control-room.svg)
 ![Products and storage panels](/docs/admin/products-storage.svg)
-![Support, payments and chat panels](/docs/admin/support-chat.svg)
+![Support and payments panels](/docs/admin/support-chat.svg)
 
 ## WordPress GraphQL Authentication
 
