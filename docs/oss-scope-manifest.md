@@ -10,7 +10,7 @@ Define a practical open-source baseline for `wp-cf-front` while keeping private/
 - Admin operations needed to run storefront basics: health, products, pricing/VAT, storage, uploads, support basics.
 - Combined media library baseline (WordPress + R2 listing/upload/edit metadata) as currently implemented in this repo.
 - Cloudflare Workers deployment and build scripts.
-- WordPress companion plugin in `packages/ragbaz-articulate-plugin/`.
+- WordPress companion plugin in `packages/ragbaz-bridge-plugin/`.
 
 ## Private/Experimental Scope (Do Not Include)
 - Tenant-specific overrides and customer hardcoding.

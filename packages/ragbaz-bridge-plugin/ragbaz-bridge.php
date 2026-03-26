@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: RAGBAZ-Articulate
+ * Plugin Name: RAGBAZ Bridge
  * Plugin URI: https://ragbaz.xyz/products
  * Description: GraphQL helpers for headless storefronts — exposes LearnPress courses and generic event data (Event Organiser, The Events Calendar, Events Manager) via WPGraphQL without bundling third‑party code.
  * Author: RAGBAZ / Articulate
@@ -13,7 +13,7 @@
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Requires: WPGraphQL
  * Optional: LearnPress, Event Organiser, The Events Calendar, Events Manager, WooCommerce + WPGraphQL for WooCommerce
- * Text Domain: ragbaz-articulate
+ * Text Domain: ragbaz-bridge
  * Contact: ragbaz@proton.me
  */
 
@@ -24,7 +24,7 @@ if (!defined('ABSPATH')) {
 // Keep the legacy option name so existing rules remain intact.
 const RAGBAZ_COURSE_RULES_OPTION = 'Articulate_course_access_rules';
 const RAGBAZ_VERSION = '1.0.3';
-const RAGBAZ_STOREFRONT_URL = 'https://github.com/ragbaz/ragbaz-articulate-storefront';
+const RAGBAZ_STOREFRONT_URL = 'https://github.com/ragbaz/ragbaz-bridge-storefront';
 
 function ragbaz_get_storefront_url() {
   return esc_url_raw(apply_filters('ragbaz_storefront_url', RAGBAZ_STOREFRONT_URL));
@@ -550,7 +550,7 @@ function ragbaz_plugin_row_links($links) {
   $links[] = sprintf(
     '<a href="%s" target="_blank" rel="noopener noreferrer">%s</a>',
     esc_url(ragbaz_get_storefront_url()),
-    esc_html__('Use with Articulate storefront (GitHub)', 'ragbaz')
+    esc_html__('Use with RAGBAZ Bridge storefront (GitHub)', 'ragbaz')
   );
   return $links;
 }
@@ -571,12 +571,12 @@ function ragbaz_admin_notice() {
   if (!current_user_can('manage_options')) return;
   if (defined('DOING_AJAX') && DOING_AJAX) return;
   // Avoid showing on every page load
-  if (get_transient('ragbaz_notice_shown')) return;
-  set_transient('ragbaz_notice_shown', '1', DAY_IN_SECONDS);
+  if (get_transient('ragbaz_bridge_notice_shown')) return;
+  set_transient('ragbaz_bridge_notice_shown', '1', DAY_IN_SECONDS);
   $url = esc_url(ragbaz_get_storefront_url());
   echo '<div class="notice notice-info is-dismissible"><p>';
   echo sprintf(
-    esc_html__('RAGBAZ-Articulate is active. Pair it with the Articulate storefront: %s', 'ragbaz'),
+    esc_html__('RAGBAZ Bridge is active. Pair it with the RAGBAZ Bridge storefront: %s', 'ragbaz'),
     '<a href="' . $url . '" target="_blank" rel="noopener noreferrer">' . $url . '</a>'
   );
   echo '</p></div>';
@@ -586,10 +586,10 @@ add_action('network_admin_notices', 'ragbaz_admin_notice');
 
 function ragbaz_register_info_page() {
   add_management_page(
-    'RAGBAZ Articulate Info',
-    'RAGBAZ Articulate',
+    'RAGBAZ Bridge Info',
+    'RAGBAZ Bridge',
     'manage_options',
-    'ragbaz-articulate-info',
+    'ragbaz-bridge-info',
     'ragbaz_render_info_page'
   );
 }
@@ -607,7 +607,7 @@ function ragbaz_render_info_page() {
   $checks = ragbaz_get_wp_runtime_checks();
   ?>
   <div class="wrap">
-    <h1>RAGBAZ Articulate Info</h1>
+    <h1>RAGBAZ Bridge Info</h1>
     <p>
       Minimal production-readiness checks for WordPress runtime and GraphQL debug settings.
     </p>
