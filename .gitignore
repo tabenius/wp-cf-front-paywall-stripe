@@ -56,6 +56,7 @@ __pycache__/
 /.serena/
 /outerr.txt
 /outlog.txt
+/packages/ragbaz-bridge-plugin/dist/
 /docs/wordpress/mu-plugins/Articulate-LearnPress-Stripe.zip
 /.wrangler/
 .env.agents
