@@ -7,8 +7,8 @@ Requires PHP: 7.4
 Stable tag: 1.0.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
-Plugin URI: https://ragbaz.xyz/products
-Author URI: https://ragbaz.xyz
+Plugin URI: https://ragbaz.cc/products
+Author URI: https://ragbaz.cc
 Contact: ragbaz@proton.me
 
 == Description ==
@@ -42,7 +42,7 @@ No. Any plugin that registers an `Event`-like post type (e.g., `tribe_events`, `
 Call `ragbazInfo { version hasLearnPress hasEventsPlugin }`, `ragbazPluginVersion`, and `ragbazWpRuntime { pluginVersion okForProduction wpDebug wpDebugLog scriptDebug saveQueries graphqlDebug queryMonitorActive xdebugActive objectCacheEnabled opcacheEnabled checkedAt }` in WPGraphQL. You can also open **Tools → RAGBAZ Bridge** in wp-admin for the same checks.
 
 = Where can I get help? =
-Email ragbaz@proton.me or visit https://ragbaz.xyz/products.
+Email ragbaz@proton.me or visit https://ragbaz.cc/products.
 
 == Changelog ==
 = 1.0.3 =

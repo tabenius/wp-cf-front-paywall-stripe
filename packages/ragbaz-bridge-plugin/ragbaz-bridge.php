@@ -1,10 +1,10 @@
 <?php
 /**
  * Plugin Name: RAGBAZ Bridge
- * Plugin URI: https://ragbaz.xyz/products
+ * Plugin URI: https://ragbaz.cc/products
  * Description: GraphQL helpers for headless storefronts — exposes LearnPress courses and generic event data (Event Organiser, The Events Calendar, Events Manager) via WPGraphQL without bundling third‑party code.
  * Author: RAGBAZ / Articulate
- * Author URI: https://ragbaz.xyz
+ * Author URI: https://ragbaz.cc
  * Version: 1.0.3
  * Requires at least: 6.3
  * Tested up to: 6.5

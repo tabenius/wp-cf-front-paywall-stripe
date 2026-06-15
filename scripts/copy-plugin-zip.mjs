@@ -14,9 +14,9 @@ const sourceZip = path.join(
   "ragbaz-bridge.zip"
 );
 
-const sharedRagbazRoot = path.resolve(repoRoot, "..", "ragbaz.xyz");
+const sharedRagbazRoot = path.resolve(repoRoot, "..", "ragbaz.cc");
 const sharedReleaseDir = path.join(sharedRagbazRoot, "release");
-const localReleaseDir = path.join(repoRoot, "ragbaz.xyz", "release");
+const localReleaseDir = path.join(repoRoot, "ragbaz.cc", "release");
 const releaseDestination =
   existsSync(path.join(sharedRagbazRoot, "src", "index.js"))
     ? sharedReleaseDir
